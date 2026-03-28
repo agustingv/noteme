@@ -3,19 +3,32 @@ namespace NoteMe {
     [GtkTemplate (ui = "/com/github/agustingv/noteme/ui/rich-editor.ui")]
     public class RichEditor : Gtk.Box {
 
-        [GtkChild] unowned Gtk.ToggleButton bold_button;
-        [GtkChild] unowned Gtk.ToggleButton italic_button;
-        [GtkChild] unowned Gtk.ToggleButton underline_button;
-        [GtkChild] unowned Gtk.ToggleButton code_button;
-        [GtkChild] unowned Gtk.ToggleButton list_button;
-        [GtkChild] unowned Gtk.TextView     text_view;
+        [GtkChild] unowned Gtk.ToggleButton  bold_button;
+        [GtkChild] unowned Gtk.ToggleButton  italic_button;
+        [GtkChild] unowned Gtk.ToggleButton  underline_button;
+        [GtkChild] unowned Gtk.ToggleButton  code_button;
+        [GtkChild] unowned Gtk.ToggleButton  list_button;
+[GtkChild] unowned Gtk.ToggleButton  preview_button;
+        [GtkChild] unowned Gtk.TextView      text_view;
+        [GtkChild] unowned Gtk.TextView      preview_view;
+        [GtkChild] unowned Gtk.ScrolledWindow preview_scroll;
+        [GtkChild] unowned Gtk.Paned         preview_pane;
 
-        private Gtk.TextTag    tag_bold;
-        private Gtk.TextTag    tag_italic;
-        private Gtk.TextTag    tag_underline;
-        private Gtk.TextTag    tag_code;
+        private Gtk.TextTag     tag_bold;
+        private Gtk.TextTag     tag_italic;
+        private Gtk.TextTag     tag_underline;
+        private Gtk.TextTag     tag_code;
         private Gtk.CssProvider font_provider;
         private bool            updating = false;
+
+        // Preview tags (owned by preview_view.buffer's tag table)
+        private Gtk.TextTag preview_h1;
+        private Gtk.TextTag preview_h2;
+        private Gtk.TextTag preview_h3;
+        private Gtk.TextTag preview_bold;
+        private Gtk.TextTag preview_italic;
+        private Gtk.TextTag preview_code;
+        private Gtk.TextTag preview_quote;
 
         public signal void changed ();
 
@@ -35,10 +48,47 @@ namespace NoteMe {
             buffer.tag_table.add (tag_underline);
 
             tag_code = new Gtk.TextTag ("code");
-            tag_code.family          = "Monospace";
-            tag_code.background      = "rgba(128,128,128,0.15)";
+            tag_code.family               = "Monospace";
+            tag_code.background           = "rgba(128,128,128,0.15)";
             tag_code.paragraph_background = "rgba(128,128,128,0.08)";
             buffer.tag_table.add (tag_code);
+
+            // Preview tags — separate tag table on preview_view.buffer
+            var pb = preview_view.buffer;
+            preview_h1 = new Gtk.TextTag (null);
+            preview_h1.weight = Pango.Weight.BOLD;
+            preview_h1.scale  = Pango.Scale.XX_LARGE;
+            pb.tag_table.add (preview_h1);
+
+            preview_h2 = new Gtk.TextTag (null);
+            preview_h2.weight = Pango.Weight.BOLD;
+            preview_h2.scale  = Pango.Scale.X_LARGE;
+            pb.tag_table.add (preview_h2);
+
+            preview_h3 = new Gtk.TextTag (null);
+            preview_h3.weight = Pango.Weight.BOLD;
+            pb.tag_table.add (preview_h3);
+
+            preview_bold = new Gtk.TextTag (null);
+            preview_bold.weight = Pango.Weight.BOLD;
+            pb.tag_table.add (preview_bold);
+
+            preview_italic = new Gtk.TextTag (null);
+            preview_italic.style = Pango.Style.ITALIC;
+            pb.tag_table.add (preview_italic);
+
+            preview_code = new Gtk.TextTag (null);
+            preview_code.family     = "Monospace";
+            preview_code.background = "rgba(128,128,128,0.15)";
+            pb.tag_table.add (preview_code);
+
+            preview_quote = new Gtk.TextTag (null);
+            preview_quote.foreground = "gray";
+            preview_quote.style      = Pango.Style.ITALIC;
+            pb.tag_table.add (preview_quote);
+
+            // Hide preview pane until toggled
+            preview_scroll.visible = false;
 
             // Font provider — registered once, CSS updated via set_font_desc()
             font_provider = new Gtk.CssProvider ();
@@ -49,7 +99,12 @@ namespace NoteMe {
                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             );
 
-            buffer.changed.connect    (() => { if (!updating) changed (); });
+            buffer.changed.connect (() => {
+                if (!updating) {
+                    changed ();
+                    if (preview_button.active) update_preview ();
+                }
+            });
             buffer.apply_tag.connect  ((_t, _s, _e) => { if (!updating) changed (); });
             buffer.remove_tag.connect ((_t, _s, _e) => { if (!updating) changed (); });
             buffer.notify["cursor-position"].connect (() => update_toolbar_state ());
@@ -76,6 +131,11 @@ namespace NoteMe {
                 new Gtk.KeyvalTrigger (Gdk.Key.l,
                     Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK),
                 new Gtk.CallbackAction ((_w, _a) => { list_button.active = !list_button.active; return true; })
+            ));
+            ctrl.add_shortcut (new Gtk.Shortcut (
+                new Gtk.KeyvalTrigger (Gdk.Key.p,
+                    Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK),
+                new Gtk.CallbackAction ((_w, _a) => { preview_button.active = !preview_button.active; return true; })
             ));
             text_view.add_controller (ctrl);
 
@@ -168,6 +228,135 @@ namespace NoteMe {
             update_toolbar_state ();
         }
 
+        // ── Markdown Preview ──────────────────────────────────────────────────
+
+        [GtkCallback]
+        private void on_preview_toggled () {
+            preview_scroll.visible = preview_button.active;
+            if (preview_button.active) {
+                int w = preview_pane.get_width ();
+                preview_pane.set_position (w > 0 ? w / 2 : 400);
+                update_preview ();
+            }
+        }
+
+        private void update_preview () {
+            Gtk.TextIter start, end;
+            text_view.buffer.get_bounds (out start, out end);
+            string text = text_view.buffer.get_text (start, end, false);
+            var pb = preview_view.buffer;
+            pb.set_text ("", 0);
+            string[] lines = text.split ("\n");
+            for (int i = 0; i < lines.length; i++) {
+                if (i > 0) {
+                    Gtk.TextIter iter;
+                    pb.get_end_iter (out iter);
+                    pb.insert (ref iter, "\n", -1);
+                }
+                render_line (pb, lines[i]);
+            }
+        }
+
+        private void render_line (Gtk.TextBuffer pb, string line) {
+            if (line.has_prefix ("### ")) {
+                render_tagged_line (pb, line.substring (4), preview_h3);
+            } else if (line.has_prefix ("## ")) {
+                render_tagged_line (pb, line.substring (3), preview_h2);
+            } else if (line.has_prefix ("# ")) {
+                render_tagged_line (pb, line.substring (2), preview_h1);
+            } else if (line.has_prefix ("- ") || line.has_prefix ("* ")) {
+                Gtk.TextIter iter;
+                pb.get_end_iter (out iter);
+                pb.insert (ref iter, "• ", -1);
+                render_inline (pb, line.substring (2));
+            } else if (line.has_prefix ("> ")) {
+                int from = pb_end_offset (pb);
+                render_inline (pb, line.substring (2));
+                pb_apply_from (pb, preview_quote, from);
+            } else if (line == "---" || line == "***" || line == "___") {
+                Gtk.TextIter iter;
+                pb.get_end_iter (out iter);
+                pb.insert (ref iter, "────────────────────────────────", -1);
+            } else {
+                render_inline (pb, line);
+            }
+        }
+
+        private void render_tagged_line (Gtk.TextBuffer pb, string text, Gtk.TextTag tag) {
+            int from = pb_end_offset (pb);
+            render_inline (pb, text);
+            pb_apply_from (pb, tag, from);
+        }
+
+        private void render_inline (Gtk.TextBuffer pb, string text) {
+            int i = 0;
+            int len = text.length;
+            var plain = new StringBuilder ();
+
+            while (i < len) {
+                if (i + 1 < len && text[i] == '*' && text[i + 1] == '*') {
+                    // **bold**
+                    flush_plain (pb, plain);
+                    int close = text.index_of ("**", i + 2);
+                    if (close > i + 1) {
+                        int from = pb_end_offset (pb);
+                        Gtk.TextIter it; pb.get_end_iter (out it);
+                        pb.insert (ref it, text.substring (i + 2, close - i - 2), -1);
+                        pb_apply_from (pb, preview_bold, from);
+                        i = close + 2;
+                    } else { plain.append ("**"); i += 2; }
+                } else if (text[i] == '*') {
+                    // *italic*
+                    flush_plain (pb, plain);
+                    int close = text.index_of ("*", i + 1);
+                    if (close > i) {
+                        int from = pb_end_offset (pb);
+                        Gtk.TextIter it; pb.get_end_iter (out it);
+                        pb.insert (ref it, text.substring (i + 1, close - i - 1), -1);
+                        pb_apply_from (pb, preview_italic, from);
+                        i = close + 1;
+                    } else { plain.append_c ('*'); i++; }
+                } else if (text[i] == '`') {
+                    // `code`
+                    flush_plain (pb, plain);
+                    int close = text.index_of ("`", i + 1);
+                    if (close > i) {
+                        int from = pb_end_offset (pb);
+                        Gtk.TextIter it; pb.get_end_iter (out it);
+                        pb.insert (ref it, text.substring (i + 1, close - i - 1), -1);
+                        pb_apply_from (pb, preview_code, from);
+                        i = close + 1;
+                    } else { plain.append_c ('`'); i++; }
+                } else {
+                    unichar c = text.get_char (i);
+                    plain.append_unichar (c);
+                    i += (int) c.to_utf8 (null);
+                }
+            }
+            flush_plain (pb, plain);
+        }
+
+        private void flush_plain (Gtk.TextBuffer pb, StringBuilder plain) {
+            if (plain.len == 0) return;
+            Gtk.TextIter it;
+            pb.get_end_iter (out it);
+            pb.insert (ref it, plain.str, -1);
+            plain.truncate (0);
+        }
+
+        private int pb_end_offset (Gtk.TextBuffer pb) {
+            Gtk.TextIter it;
+            pb.get_end_iter (out it);
+            return it.get_offset ();
+        }
+
+        private void pb_apply_from (Gtk.TextBuffer pb, Gtk.TextTag tag, int from) {
+            Gtk.TextIter s, e;
+            pb.get_iter_at_offset (out s, from);
+            pb.get_end_iter (out e);
+            pb.apply_tag (tag, s, e);
+        }
+
         // Returns true if the line beginning at `iter` starts with "• "
         private bool line_has_bullet (Gtk.TextIter iter) {
             if (iter.get_char () != '•') return false;
@@ -226,10 +415,13 @@ namespace NoteMe {
         public void set_font_desc (string font_desc) {
             var desc    = Pango.FontDescription.from_string (font_desc);
             var family  = desc.get_family () ?? "Sans";
-            int size_pt = desc.get_size () / Pango.SCALE;
-            if (size_pt <= 0) size_pt = 12;
+            int size    = desc.get_size ();
+            if (size <= 0) size = 12 * Pango.SCALE;
+            string size_css = desc.get_size_is_absolute ()
+                ? "%dpx".printf (size / Pango.SCALE)
+                : "%dpt".printf (size / Pango.SCALE);
             font_provider.load_from_string (
-                ".noteme-editor text { font-family: %s; font-size: %dpt; }".printf (family, size_pt)
+                "textview.noteme-editor { font-family: \"%s\"; font-size: %s; }".printf (family, size_css)
             );
         }
 

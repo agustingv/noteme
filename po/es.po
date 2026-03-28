@@ -62,6 +62,9 @@ msgstr "Código en línea (Ctrl+`)"
 msgid "Bullet List (Ctrl+Shift+L)"
 msgstr "Lista con viñetas (Ctrl+Mayús+L)"
 
+msgid "Markdown Preview (Ctrl+Shift+P)"
+msgstr "Vista previa Markdown (Ctrl+Mayús+P)"
+
 # Delete note dialog
 msgid "Delete Note?"
 msgstr "¿Eliminar nota?"

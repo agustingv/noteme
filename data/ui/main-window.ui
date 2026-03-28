@@ -128,7 +128,6 @@
 
             <property name="end-child">
               <object class="GtkStack" id="content_stack">
-                <property name="visible-child-name">empty</property>
 
                 <child>
                   <object class="GtkStackPage">

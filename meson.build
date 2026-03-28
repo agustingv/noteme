@@ -13,5 +13,7 @@ add_project_arguments(
 )
 
 subdir('data')
-subdir('po')
+if find_program('msgfmt', required: false).found()
+  subdir('po')
+endif
 subdir('src')

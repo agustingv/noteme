@@ -13,6 +13,7 @@
         <property name="margin-top">6</property>
         <property name="margin-bottom">6</property>
 
+        <!-- Format buttons (left) -->
         <child>
           <object class="GtkBox">
             <property name="spacing">6</property>
@@ -52,14 +53,14 @@
               </object>
             </child>
 
-            <!-- Code + List group -->
+            <!-- Code + List + Heading group -->
             <child>
               <object class="GtkBox">
                 <style><class name="linked"/></style>
 
                 <child>
                   <object class="GtkToggleButton" id="code_button">
-                    <property name="icon-name">format-text-code-symbolic</property>
+                    <property name="label">&lt;/&gt;</property>
                     <property name="tooltip-text" translatable="yes">Inline Code (Ctrl+`)</property>
                     <signal name="toggled" handler="on_code_toggled"/>
                     <style><class name="flat"/></style>
@@ -68,18 +69,37 @@
 
                 <child>
                   <object class="GtkToggleButton" id="list_button">
-                    <property name="icon-name">view-list-bullet-symbolic</property>
+                    <property name="label">•≡</property>
                     <property name="tooltip-text" translatable="yes">Bullet List (Ctrl+Shift+L)</property>
                     <signal name="toggled" handler="on_list_toggled"/>
                     <style><class name="flat"/></style>
                   </object>
                 </child>
 
+
               </object>
             </child>
 
           </object>
         </child>
+
+        <!-- Spacer -->
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">true</property>
+          </object>
+        </child>
+
+        <!-- Preview toggle (right) -->
+        <child>
+          <object class="GtkToggleButton" id="preview_button">
+            <property name="label">MD</property>
+            <property name="tooltip-text" translatable="yes">Markdown Preview (Ctrl+Shift+P)</property>
+            <signal name="toggled" handler="on_preview_toggled"/>
+            <style><class name="flat"/></style>
+          </object>
+        </child>
+
       </object>
     </child>
 
@@ -87,22 +107,52 @@
       <object class="GtkSeparator"/>
     </child>
 
-    <!-- Editor area -->
+    <!-- Editor + Preview pane -->
     <child>
-      <object class="GtkScrolledWindow">
+      <object class="GtkPaned" id="preview_pane">
+        <property name="orientation">horizontal</property>
         <property name="vexpand">true</property>
-        <property name="hscrollbar-policy">never</property>
-        <child>
-          <object class="GtkTextView" id="text_view">
-            <property name="wrap-mode">word-char</property>
-            <property name="pixels-above-lines">4</property>
-            <property name="pixels-below-lines">4</property>
-            <property name="left-margin">16</property>
-            <property name="right-margin">16</property>
-            <property name="top-margin">12</property>
-            <property name="bottom-margin">12</property>
+        <property name="shrink-start-child">false</property>
+        <property name="shrink-end-child">true</property>
+        <property name="resize-start-child">true</property>
+        <property name="resize-end-child">true</property>
+
+        <property name="start-child">
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkTextView" id="text_view">
+                <property name="wrap-mode">word-char</property>
+                <property name="pixels-above-lines">4</property>
+                <property name="pixels-below-lines">4</property>
+                <property name="left-margin">16</property>
+                <property name="right-margin">16</property>
+                <property name="top-margin">12</property>
+                <property name="bottom-margin">12</property>
+              </object>
+            </child>
           </object>
-        </child>
+        </property>
+
+        <property name="end-child">
+          <object class="GtkScrolledWindow" id="preview_scroll">
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkTextView" id="preview_view">
+                <property name="editable">false</property>
+                <property name="cursor-visible">false</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="pixels-above-lines">4</property>
+                <property name="pixels-below-lines">4</property>
+                <property name="left-margin">16</property>
+                <property name="right-margin">16</property>
+                <property name="top-margin">12</property>
+                <property name="bottom-margin">12</property>
+              </object>
+            </child>
+          </object>
+        </property>
+
       </object>
     </child>
 

@@ -11,20 +11,27 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.MenuButton   color_button;
         [GtkChild] unowned Gtk.SearchEntry  search_entry;
 
-        private NoteStore   store;
-        private Preferences prefs;
-        private Note?       current_note = null;
-        private bool        updating     = false;
+        private NoteStore store;
+        private Note?     current_note = null;
+        private bool      updating     = false;
+
+        public Preferences prefs { get; construct; }
 
         public MainWindow (Gtk.Application app, Preferences prefs) {
-            Object (application: app);
-            this.prefs = prefs;
+            Object (application: app, prefs: prefs);
         }
 
         construct {
             store = new NoteStore ();
 
-            notes_list.bind_model (store.store, (obj) => {
+            var custom_filter = new Gtk.CustomFilter ((obj) => {
+                var query = search_entry.text.strip ().down ();
+                if (query == "") return true;
+                return ((Note) obj).title.down ().contains (query);
+            });
+            var filter_model = new Gtk.FilterListModel (store.store, custom_filter);
+
+            notes_list.bind_model (filter_model, (obj) => {
                 return new NoteRow ((Note) obj);
             });
 
@@ -32,8 +39,7 @@ namespace NoteMe {
             title_entry.changed.connect (on_title_changed);
             rich_editor.changed.connect (on_body_changed);
 
-            notes_list.set_filter_func (filter_row);
-            search_entry.search_changed.connect (() => notes_list.invalidate_filter ());
+            search_entry.search_changed.connect (() => custom_filter.changed (Gtk.FilterChange.DIFFERENT));
 
             setup_color_picker ();
             update_empty_state ();
@@ -41,15 +47,9 @@ namespace NoteMe {
         }
 
         public void apply_font_settings () {
-            rich_editor.set_font_desc (prefs.editor_font_desc);
+            rich_editor.set_font_desc (prefs.editor_font_desc ?? "Sans 12");
         }
 
-        private bool filter_row (Gtk.ListBoxRow row) {
-            var query = search_entry.text.strip ().down ();
-            if (query == "") return true;
-            var note = ((NoteRow) row.child).note;
-            return note.title.down ().contains (query);
-        }
 
         private void setup_color_picker () {
             // Preset swatch colors (empty string = no color / default)
