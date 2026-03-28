@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=GNotes
+Name=NoteMe
 Comment=A simple note-taking application
-Exec=gnotes
-Icon=com.github.gnotes
+Exec=noteme
+Icon=com.github.agustingv.noteme
 Terminal=false
 Type=Application
 Categories=Office;TextEditor;

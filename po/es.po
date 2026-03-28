@@ -1,0 +1,118 @@
+# Spanish translation for NoteMe
+# Copyright (C) 2026 NoteMe Contributors
+# This file is distributed under the same license as the NoteMe package.
+msgid ""
+msgstr ""
+"Project-Id-Version: noteme 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/example/gnotes/issues\n"
+"POT-Creation-Date: 2026-03-28 00:00+0000\n"
+"PO-Revision-Date: 2026-03-28 00:00+0000\n"
+"Last-Translator: NoteMe Contributors\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# UI strings — main window
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "About NoteMe"
+msgstr "Acerca de NoteMe"
+
+msgid "Main Menu"
+msgstr "Menú principal"
+
+msgid "New Note"
+msgstr "Nueva nota"
+
+msgid "Delete Note"
+msgstr "Eliminar nota"
+
+msgid "Search notes…"
+msgstr "Buscar notas…"
+
+msgid "No Note Selected"
+msgstr "Ninguna nota seleccionada"
+
+msgid "Select a note from the sidebar or create a new one."
+msgstr "Selecciona una nota de la barra lateral o crea una nueva."
+
+msgid "Note title…"
+msgstr "Título de la nota…"
+
+msgid "Note color"
+msgstr "Color de la nota"
+
+# Rich editor toolbar
+msgid "Bold (Ctrl+B)"
+msgstr "Negrita (Ctrl+B)"
+
+msgid "Italic (Ctrl+I)"
+msgstr "Cursiva (Ctrl+I)"
+
+msgid "Underline (Ctrl+U)"
+msgstr "Subrayado (Ctrl+U)"
+
+msgid "Inline Code (Ctrl+`)"
+msgstr "Código en línea (Ctrl+`)"
+
+msgid "Bullet List (Ctrl+Shift+L)"
+msgstr "Lista con viñetas (Ctrl+Mayús+L)"
+
+# Delete note dialog
+msgid "Delete Note?"
+msgstr "¿Eliminar nota?"
+
+msgid "%s will be permanently deleted."
+msgstr "%s se eliminará de forma permanente."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+# Color picker labels
+msgid "Default"
+msgstr "Predeterminado"
+
+msgid "Red"
+msgstr "Rojo"
+
+msgid "Yellow"
+msgstr "Amarillo"
+
+msgid "Lemon"
+msgstr "Limón"
+
+msgid "Sage"
+msgstr "Salvia"
+
+msgid "Mint"
+msgstr "Menta"
+
+msgid "Fog"
+msgstr "Niebla"
+
+msgid "Blue"
+msgstr "Azul"
+
+msgid "Purple"
+msgstr "Morado"
+
+msgid "Pink"
+msgstr "Rosa"
+
+# Preferences dialog
+msgid "Editor"
+msgstr "Editor"
+
+msgid "Font"
+msgstr "Fuente"
+
+# About dialog
+msgid "A simple note-taking app built with GTK4 and Vala."
+msgstr "Una aplicación sencilla de notas construida con GTK4 y Vala."

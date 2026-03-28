@@ -1,4 +1,4 @@
-namespace GNotes {
+namespace NoteMe {
 
     // Persists notes to ~/.local/share/gnotes/notes/
     public class NoteStore : Object {
@@ -9,7 +9,7 @@ namespace GNotes {
 
         public NoteStore () {
             notes_dir = Path.build_filename (
-                Environment.get_user_data_dir (), "gnotes", "notes"
+                Environment.get_user_data_dir (), "noteme", "notes"
             );
             DirUtils.create_with_parents (notes_dir, 0755);
             _store = new ListStore (typeof (Note));
@@ -21,6 +21,7 @@ namespace GNotes {
         }
 
         private void load_all () {
+            var notes = new GenericArray<Note> ();
             try {
                 var dir = Dir.open (notes_dir);
                 string? name;
@@ -30,11 +31,15 @@ namespace GNotes {
                     string contents;
                     FileUtils.get_contents (path, out contents);
                     var note = Note.from_string (contents);
-                    if (note != null) _store.append (note);
+                    if (note != null) notes.add (note);
                 }
             } catch (Error e) {
                 warning ("Could not load notes: %s", e.message);
             }
+
+            notes.sort ((a, b) => strcmp (b.created_at, a.created_at));
+            foreach (var note in notes)
+                _store.append (note);
         }
 
         public void save (Note note) {
@@ -46,11 +51,8 @@ namespace GNotes {
         }
 
         public void delete_note (Note note) {
-            try {
-                FileUtils.unlink (note_path (note));
-            } catch (Error e) {
-                warning ("Could not delete note file: %s", e.message);
-            }
+            if (FileUtils.unlink (note_path (note)) != 0)
+                warning ("Could not delete note file: %s", note_path (note));
             uint pos;
             if (_store.find (note, out pos))
                 _store.remove (pos);

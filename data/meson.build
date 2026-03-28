@@ -1,9 +1,9 @@
 install_data(
-  'com.github.gnotes.desktop',
+  'com.github.agustingv.noteme.desktop',
   install_dir: get_option('datadir') / 'applications',
 )
 
 install_data(
-  'com.github.gnotes.appdata.xml',
+  'com.github.agustingv.noteme.appdata.xml',
   install_dir: get_option('datadir') / 'appdata',
 )

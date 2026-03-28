@@ -1,0 +1,6 @@
+src/main.vala
+src/application.vala
+src/preferences_dialog.vala
+src/main_window.vala
+data/ui/main-window.ui
+data/ui/rich-editor.ui

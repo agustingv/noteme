@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+
+  <template class="NoteMeRichEditor" parent="GtkBox">
+    <property name="orientation">vertical</property>
+
+    <!-- Formatting toolbar -->
+    <child>
+      <object class="GtkBox">
+        <property name="margin-start">8</property>
+        <property name="margin-end">8</property>
+        <property name="margin-top">6</property>
+        <property name="margin-bottom">6</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="spacing">6</property>
+
+            <!-- B / I / U group -->
+            <child>
+              <object class="GtkBox">
+                <style><class name="linked"/></style>
+
+                <child>
+                  <object class="GtkToggleButton" id="bold_button">
+                    <property name="label">B</property>
+                    <property name="tooltip-text" translatable="yes">Bold (Ctrl+B)</property>
+                    <signal name="toggled" handler="on_bold_toggled"/>
+                    <style><class name="flat"/></style>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkToggleButton" id="italic_button">
+                    <property name="label">I</property>
+                    <property name="tooltip-text" translatable="yes">Italic (Ctrl+I)</property>
+                    <signal name="toggled" handler="on_italic_toggled"/>
+                    <style><class name="flat"/></style>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkToggleButton" id="underline_button">
+                    <property name="label">U</property>
+                    <property name="tooltip-text" translatable="yes">Underline (Ctrl+U)</property>
+                    <signal name="toggled" handler="on_underline_toggled"/>
+                    <style><class name="flat"/></style>
+                  </object>
+                </child>
+
+              </object>
+            </child>
+
+            <!-- Code + List group -->
+            <child>
+              <object class="GtkBox">
+                <style><class name="linked"/></style>
+
+                <child>
+                  <object class="GtkToggleButton" id="code_button">
+                    <property name="icon-name">format-text-code-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Inline Code (Ctrl+`)</property>
+                    <signal name="toggled" handler="on_code_toggled"/>
+                    <style><class name="flat"/></style>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkToggleButton" id="list_button">
+                    <property name="icon-name">view-list-bullet-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Bullet List (Ctrl+Shift+L)</property>
+                    <signal name="toggled" handler="on_list_toggled"/>
+                    <style><class name="flat"/></style>
+                  </object>
+                </child>
+
+              </object>
+            </child>
+
+          </object>
+        </child>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkSeparator"/>
+    </child>
+
+    <!-- Editor area -->
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="vexpand">true</property>
+        <property name="hscrollbar-policy">never</property>
+        <child>
+          <object class="GtkTextView" id="text_view">
+            <property name="wrap-mode">word-char</property>
+            <property name="pixels-above-lines">4</property>
+            <property name="pixels-below-lines">4</property>
+            <property name="left-margin">16</property>
+            <property name="right-margin">16</property>
+            <property name="top-margin">12</property>
+            <property name="bottom-margin">12</property>
+          </object>
+        </child>
+      </object>
+    </child>
+
+  </template>
+</interface>
