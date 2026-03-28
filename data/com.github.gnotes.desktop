@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GNotes
+Comment=A simple note-taking application
+Exec=gnotes
+Icon=com.github.gnotes
+Terminal=false
+Type=Application
+Categories=Office;TextEditor;
+Keywords=notes;text;editor;

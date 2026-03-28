@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.gnotes</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>GNotes</name>
+  <summary>A simple note-taking application</summary>
+  <description>
+    <p>GNotes is a minimal GNOME note-taking application built with GTK4 and libadwaita.</p>
+    <ul>
+      <li>Create, edit, and delete notes</li>
+      <li>Notes are saved automatically</li>
+      <li>Sidebar navigation with live preview</li>
+    </ul>
+  </description>
+  <url type="homepage">https://github.com/example/gnotes</url>
+  <provides>
+    <binary>gnotes</binary>
+  </provides>
+  <releases>
+    <release version="1.0.0" date="2026-03-28"/>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>

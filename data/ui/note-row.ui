@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+
+  <template class="GNotesNoteRow" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <property name="spacing">4</property>
+    <property name="margin-start">12</property>
+    <property name="margin-end">12</property>
+    <property name="margin-top">8</property>
+    <property name="margin-bottom">8</property>
+
+    <child>
+      <object class="GtkLabel" id="title_label">
+        <property name="xalign">0</property>
+        <property name="ellipsize">end</property>
+        <style><class name="heading"/></style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="preview_label">
+        <property name="xalign">0</property>
+        <property name="ellipsize">end</property>
+        <style><class name="dim-label"/><class name="caption"/></style>
+      </object>
+    </child>
+
+  </template>
+</interface>
