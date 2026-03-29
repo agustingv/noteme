@@ -29,6 +29,7 @@ namespace NoteMe {
         private Gtk.TextTag preview_italic;
         private Gtk.TextTag preview_code;
         private Gtk.TextTag preview_quote;
+        private Gtk.TextTag preview_underline;
 
         public signal void changed ();
 
@@ -86,6 +87,10 @@ namespace NoteMe {
             preview_quote.foreground = "gray";
             preview_quote.style      = Pango.Style.ITALIC;
             pb.tag_table.add (preview_quote);
+
+            preview_underline = new Gtk.TextTag (null);
+            preview_underline.underline = Pango.Underline.SINGLE;
+            pb.tag_table.add (preview_underline);
 
             // Hide preview pane until toggled
             preview_scroll.visible = false;
@@ -234,16 +239,61 @@ namespace NoteMe {
         private void on_preview_toggled () {
             preview_scroll.visible = preview_button.active;
             if (preview_button.active) {
-                int w = preview_pane.get_width ();
-                preview_pane.set_position (w > 0 ? w / 2 : 400);
-                update_preview ();
+                // Defer position and render until after GTK re-lays out the pane
+                GLib.Idle.add (() => {
+                    int w = preview_pane.get_width ();
+                    preview_pane.set_position (w > 0 ? w / 2 : 400);
+                    update_preview ();
+                    return GLib.Source.REMOVE;
+                });
             }
         }
 
+        // Convert stored HTML-like markup to inline markdown so the renderer
+        // can show both toolbar-applied formatting and typed markdown syntax.
+        private string markup_to_markdown (string markup) {
+            var sb = new StringBuilder ();
+            int i = 0;
+            int len = markup.length;
+            while (i < len) {
+                if (markup[i] == '<') {
+                    int close = markup.index_of (">", i);
+                    if (close < 0) break;
+                    string tag = markup.substring (i + 1, close - i - 1);
+                    switch (tag) {
+                        case "b":     sb.append ("**"); break;
+                        case "/b":    sb.append ("**"); break;
+                        case "i":     sb.append ("*");  break;
+                        case "/i":    sb.append ("*");  break;
+                        case "u":     sb.append ("__"); break;
+                        case "/u":    sb.append ("__"); break;
+                        case "code":  sb.append ("`");  break;
+                        case "/code": sb.append ("`");  break;
+                    }
+                    i = close + 1;
+                } else if (markup[i] == '&') {
+                    int semi = markup.index_of (";", i);
+                    if (semi >= 0) {
+                        string entity = markup.substring (i + 1, semi - i - 1);
+                        if      (entity == "lt")  sb.append_c ('<');
+                        else if (entity == "gt")  sb.append_c ('>');
+                        else if (entity == "amp") sb.append_c ('&');
+                        i = semi + 1;
+                    } else {
+                        sb.append_c ('&');
+                        i++;
+                    }
+                } else {
+                    unichar c = markup.get_char (i);
+                    sb.append_unichar (c);
+                    i += (int) c.to_utf8 (null);
+                }
+            }
+            return sb.str;
+        }
+
         private void update_preview () {
-            Gtk.TextIter start, end;
-            text_view.buffer.get_bounds (out start, out end);
-            string text = text_view.buffer.get_text (start, end, false);
+            string text = markup_to_markdown (get_markup ());
             var pb = preview_view.buffer;
             pb.set_text ("", 0);
             string[] lines = text.split ("\n");
@@ -264,11 +314,13 @@ namespace NoteMe {
                 render_tagged_line (pb, line.substring (3), preview_h2);
             } else if (line.has_prefix ("# ")) {
                 render_tagged_line (pb, line.substring (2), preview_h1);
-            } else if (line.has_prefix ("- ") || line.has_prefix ("* ")) {
+            } else if (line.has_prefix ("- ") || line.has_prefix ("* ") || line.has_prefix ("• ")) {
                 Gtk.TextIter iter;
                 pb.get_end_iter (out iter);
                 pb.insert (ref iter, "• ", -1);
-                render_inline (pb, line.substring (2));
+                // "• " is 4 bytes (3-byte UTF-8 char + space); "-" and "*" prefixes are 2 bytes
+                int skip = line.has_prefix ("• ") ? "• ".length : 2;
+                render_inline (pb, line.substring (skip));
             } else if (line.has_prefix ("> ")) {
                 int from = pb_end_offset (pb);
                 render_inline (pb, line.substring (2));
@@ -316,6 +368,17 @@ namespace NoteMe {
                         pb_apply_from (pb, preview_italic, from);
                         i = close + 1;
                     } else { plain.append_c ('*'); i++; }
+                } else if (i + 1 < len && text[i] == '_' && text[i + 1] == '_') {
+                    // __underline__
+                    flush_plain (pb, plain);
+                    int close = text.index_of ("__", i + 2);
+                    if (close > i + 1) {
+                        int from = pb_end_offset (pb);
+                        Gtk.TextIter it; pb.get_end_iter (out it);
+                        pb.insert (ref it, text.substring (i + 2, close - i - 2), -1);
+                        pb_apply_from (pb, preview_underline, from);
+                        i = close + 2;
+                    } else { plain.append ("__"); i += 2; }
                 } else if (text[i] == '`') {
                     // `code`
                     flush_plain (pb, plain);
