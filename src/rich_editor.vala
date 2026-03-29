@@ -14,6 +14,7 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.ScrolledWindow preview_scroll;
         [GtkChild] unowned Gtk.Paned         preview_pane;
         [GtkChild] unowned Gtk.Label         position_label;
+        [GtkChild] unowned Gtk.Button        export_button;
 
         private Gtk.TextTag     tag_bold;
         private Gtk.TextTag     tag_italic;
@@ -252,6 +253,48 @@ namespace NoteMe {
                     return GLib.Source.REMOVE;
                 });
             }
+        }
+
+        [GtkCallback]
+        private void on_export_clicked () {
+            var dialog = new Gtk.FileDialog ();
+            dialog.title = _("Export Note");
+            dialog.initial_name = "note.md";
+
+            var md_filter = new Gtk.FileFilter ();
+            md_filter.name = _("Markdown files");
+            md_filter.add_suffix ("md");
+
+            var txt_filter = new Gtk.FileFilter ();
+            txt_filter.name = _("Text files");
+            txt_filter.add_suffix ("txt");
+
+            var all_filter = new Gtk.FileFilter ();
+            all_filter.name = _("All files");
+            all_filter.add_pattern ("*");
+
+            var filters = new GLib.ListStore (typeof (Gtk.FileFilter));
+            filters.append (md_filter);
+            filters.append (txt_filter);
+            filters.append (all_filter);
+            dialog.filters = filters;
+            dialog.default_filter = md_filter;
+
+            var parent = get_ancestor (typeof (Gtk.Window)) as Gtk.Window;
+            dialog.save.begin (parent, null, (obj, res) => {
+                try {
+                    var file = dialog.save.end (res);
+                    string content = markup_to_markdown (get_markup ());
+                    string? new_etag;
+                    file.replace_contents (
+                        content.data, null, false,
+                        GLib.FileCreateFlags.REPLACE_DESTINATION,
+                        out new_etag, null
+                    );
+                } catch (Error e) {
+                    // User cancelled or I/O error — nothing to do
+                }
+            });
         }
 
         // Convert stored HTML-like markup to inline markdown so the renderer

@@ -100,6 +100,16 @@
           </object>
         </child>
 
+        <!-- Export button (right) -->
+        <child>
+          <object class="GtkButton" id="export_button">
+            <property name="icon-name">document-save-as-symbolic</property>
+            <property name="tooltip-text" translatable="yes">Export to file</property>
+            <signal name="clicked" handler="on_export_clicked"/>
+            <style><class name="flat"/></style>
+          </object>
+        </child>
+
       </object>
     </child>
 
