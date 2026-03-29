@@ -13,6 +13,7 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.TextView      preview_view;
         [GtkChild] unowned Gtk.ScrolledWindow preview_scroll;
         [GtkChild] unowned Gtk.Paned         preview_pane;
+        [GtkChild] unowned Gtk.Label         position_label;
 
         private Gtk.TextTag     tag_bold;
         private Gtk.TextTag     tag_italic;
@@ -162,6 +163,10 @@ namespace NoteMe {
             ls.set_line_offset (0);
             list_button.active = line_has_bullet (ls);
             updating = false;
+
+            int line = cursor.get_line () + 1;
+            int col  = cursor.get_line_offset () + 1;
+            position_label.label = "Ln %d, Col %d".printf (line, col);
         }
 
         [GtkCallback]

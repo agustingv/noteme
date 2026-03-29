@@ -156,5 +156,36 @@
       </object>
     </child>
 
+    <child>
+      <object class="GtkSeparator"/>
+    </child>
+
+    <!-- Footer: cursor position -->
+    <child>
+      <object class="GtkBox">
+        <property name="margin-start">8</property>
+        <property name="margin-end">8</property>
+        <property name="margin-top">3</property>
+        <property name="margin-bottom">3</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">true</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkLabel" id="position_label">
+            <property name="label">Ln 1, Col 1</property>
+            <style>
+              <class name="dim-label"/>
+              <class name="caption"/>
+            </style>
+          </object>
+        </child>
+
+      </object>
+    </child>
+
   </template>
 </interface>

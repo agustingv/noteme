@@ -49,7 +49,7 @@ namespace NoteMe {
             dialog.application_name = "NoteMe";
             dialog.application_icon = "com.github.agustingv.noteme";
             dialog.version          = "1.0.0";
-            dialog.developer_name   = "GNotes Contributors";
+            dialog.developer_name   = "NoteMe Contributors";
             dialog.license_type     = Gtk.License.GPL_3_0;
             dialog.website          = "https://github.com/agustingv/noteme";
             dialog.issue_url        = "https://github.com/agustingv/noteme/issues";

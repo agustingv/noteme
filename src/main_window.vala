@@ -44,6 +44,9 @@ namespace NoteMe {
             setup_color_picker ();
             update_empty_state ();
             apply_font_settings ();
+
+            var first = notes_list.get_row_at_index (0);
+            if (first != null) notes_list.select_row (first);
         }
 
         public void apply_font_settings () {
@@ -138,9 +141,22 @@ namespace NoteMe {
             dialog.default_response = "cancel";
             dialog.choose.begin (this, null, (obj, res) => {
                 if (dialog.choose.end (res) == "delete") {
+                    var selected = notes_list.get_selected_row ();
+                    int idx = selected != null ? selected.get_index () : 0;
+
                     store.delete_note (current_note);
                     current_note = null;
-                    update_empty_state ();
+
+                    // Try next row at same index (shifted up after deletion),
+                    // then fall back to the row above.
+                    var next = notes_list.get_row_at_index (idx);
+                    if (next == null && idx > 0)
+                        next = notes_list.get_row_at_index (idx - 1);
+
+                    if (next != null)
+                        notes_list.select_row (next);
+                    else
+                        update_empty_state ();
                 }
             });
         }
