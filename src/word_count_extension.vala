@@ -15,14 +15,14 @@ namespace NoteMe {
             label.add_css_class ("caption");
             label.margin_start = 4;
             label.margin_end   = 4;
-            h.add_toolbar_widget (label);
+            h.add_footer_widget (label);
             h.note_selected.connect        (() => update ());
             h.note_content_changed.connect (() => update ());
             update ();
         }
 
         public void deactivate () {
-            host?.remove_toolbar_widget (label);
+            host?.remove_footer_widget (label);
             host = null;
         }
 

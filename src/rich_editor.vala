@@ -15,6 +15,7 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.Paned         preview_pane;
         [GtkChild] unowned Gtk.Label         position_label;
         [GtkChild] unowned Gtk.Box           extension_box;
+        [GtkChild] unowned Gtk.Box           footer_extension_box;
 
         private Gtk.TextTag     tag_bold;
         private Gtk.TextTag     tag_italic;
@@ -525,6 +526,14 @@ namespace NoteMe {
 
         public void remove_extension_widget (Gtk.Widget w) {
             extension_box.remove (w);
+        }
+
+        public void add_footer_extension_widget (Gtk.Widget w) {
+            footer_extension_box.append (w);
+        }
+
+        public void remove_footer_extension_widget (Gtk.Widget w) {
+            footer_extension_box.remove (w);
         }
 
         public new void grab_focus () {

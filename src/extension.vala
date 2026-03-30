@@ -33,6 +33,25 @@ namespace NoteMe {
         public void remove_toolbar_widget (Gtk.Widget w) {
             editor?.remove_extension_widget (w);
         }
+
+        // Convenience: create a styled flat icon button, add it to the toolbar,
+        // and return it so the caller can connect clicked/other signals.
+        public Gtk.Button add_toolbar_button (string icon_name, string tooltip) {
+            var btn = new Gtk.Button.from_icon_name (icon_name);
+            btn.tooltip_text = tooltip;
+            btn.add_css_class ("flat");
+            add_toolbar_widget (btn);
+            return btn;
+        }
+
+        // Add a widget to the editor footer (left of the cursor-position label)
+        public void add_footer_widget (Gtk.Widget w) {
+            editor?.add_footer_extension_widget (w);
+        }
+
+        public void remove_footer_widget (Gtk.Widget w) {
+            editor?.remove_footer_extension_widget (w);
+        }
     }
 
     // Manages registration, loading, and lifecycle of extensions

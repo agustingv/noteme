@@ -68,13 +68,12 @@ public class MyExtension : Object, NoteMe.IExtension {
 
     public void activate (NoteMe.ExtensionHost h) {
         host = h;
-        btn  = new Gtk.Button.with_label ("Hi");
-        btn.add_css_class ("flat");
+        btn  = h.add_toolbar_button ("dialog-information-symbolic", "Show note title");
+        btn.sensitive = false;
         btn.clicked.connect (() => {
             if (host.current_note != null)
                 print ("Note: %s\n", host.current_note.title);
         });
-        h.add_toolbar_widget (btn);
         h.note_selected.connect ((note) => btn.sensitive = note != null);
     }
 
@@ -128,8 +127,11 @@ cp my_extension.so ~/.local/share/noteme/plugins/
 | Symbol | Description |
 |---|---|
 | `host.current_note` | The currently selected `Note`, or `null` |
-| `host.add_toolbar_widget(w)` | Append a widget to the editor toolbar |
+| `host.add_toolbar_widget(w)` | Append any widget to the editor toolbar |
 | `host.remove_toolbar_widget(w)` | Remove a previously added toolbar widget |
+| `host.add_toolbar_button(icon, tooltip)` | Create a styled flat icon button, add it to the toolbar, and return it |
+| `host.add_footer_widget(w)` | Append a widget to the editor footer (left of the cursor position) |
+| `host.remove_footer_widget(w)` | Remove a previously added footer widget |
 | `host.note_selected(note)` | Signal: fired when the selected note changes |
 | `host.note_content_changed()` | Signal: fired when the note body is edited |
 
