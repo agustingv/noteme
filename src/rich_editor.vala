@@ -14,6 +14,7 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.ScrolledWindow preview_scroll;
         [GtkChild] unowned Gtk.Paned         preview_pane;
         [GtkChild] unowned Gtk.Label         position_label;
+        [GtkChild] unowned Gtk.Box           extension_box;
 
         private Gtk.TextTag     tag_bold;
         private Gtk.TextTag     tag_italic;
@@ -516,6 +517,14 @@ namespace NoteMe {
                 buffer.apply_tag (tag, start, end);
             else
                 buffer.remove_tag (tag, start, end);
+        }
+
+        public void add_extension_widget (Gtk.Widget w) {
+            extension_box.append (w);
+        }
+
+        public void remove_extension_widget (Gtk.Widget w) {
+            extension_box.remove (w);
         }
 
         public new void grab_focus () {

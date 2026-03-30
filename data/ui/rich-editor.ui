@@ -90,6 +90,13 @@
           </object>
         </child>
 
+        <!-- Extension widgets (populated by extensions at runtime) -->
+        <child>
+          <object class="GtkBox" id="extension_box">
+            <property name="spacing">4</property>
+          </object>
+        </child>
+
         <!-- Preview toggle (right) -->
         <child>
           <object class="GtkToggleButton" id="preview_button">

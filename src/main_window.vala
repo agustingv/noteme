@@ -11,14 +11,16 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.MenuButton   color_button;
         [GtkChild] unowned Gtk.SearchEntry  search_entry;
 
-        private NoteStore store;
-        private Note?     current_note = null;
-        private bool      updating     = false;
+        private NoteStore     store;
+        private Note?         current_note = null;
+        private bool          updating     = false;
+        private ExtensionHost host;
 
-        public Preferences prefs { get; construct; }
+        public Preferences       prefs       { get; construct; }
+        public ExtensionManager  ext_manager { get; construct; }
 
-        public MainWindow (Gtk.Application app, Preferences prefs) {
-            Object (application: app, prefs: prefs);
+        public MainWindow (Gtk.Application app, Preferences prefs, ExtensionManager ext_manager) {
+            Object (application: app, prefs: prefs, ext_manager: ext_manager);
         }
 
         construct {
@@ -58,6 +60,13 @@ namespace NoteMe {
             setup_color_picker ();
             update_empty_state ();
             apply_font_settings ();
+
+            host        = new ExtensionHost ();
+            host.editor = rich_editor;
+            rich_editor.changed.connect (() => {
+                if (!updating) host.note_content_changed ();
+            });
+            ext_manager.activate_all (host);
 
             var first = notes_list.get_row_at_index (0);
             if (first != null) notes_list.select_row (first);
@@ -177,11 +186,15 @@ namespace NoteMe {
 
         private void on_row_selected (Gtk.ListBoxRow? row) {
             if (row == null) {
-                current_note = null;
+                current_note     = null;
+                host.current_note = null;
+                host.note_selected (null);
                 update_empty_state ();
                 return;
             }
-            current_note = ((NoteRow) row.child).note;
+            current_note      = ((NoteRow) row.child).note;
+            host.current_note  = current_note;
+            host.note_selected (current_note);
             load_note (current_note);
             content_stack.visible_child_name = "editor";
             delete_button.sensitive = true;
