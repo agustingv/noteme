@@ -6,8 +6,11 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.Label       title_label;
         [GtkChild] unowned Gtk.Label       preview_label;
         [GtkChild] unowned Gtk.DrawingArea color_strip;
+        [GtkChild] unowned Gtk.Button      pin_button;
 
         public Note note { get; construct; }
+
+        public signal void pin_toggled (Note note);
 
         public NoteRow (Note note) {
             Object (note: note);
@@ -16,11 +19,25 @@ namespace NoteMe {
         construct {
             color_strip.set_draw_func (draw_color);
 
-            note.notify["title"].connect (update_labels);
-            note.notify["body"].connect  (update_labels);
-            note.notify["color"].connect (() => color_strip.queue_draw ());
+            note.notify["title"].connect  (update_labels);
+            note.notify["body"].connect   (update_labels);
+            note.notify["color"].connect  (() => color_strip.queue_draw ());
+            note.notify["pinned"].connect (update_pin_style);
+
+            pin_button.clicked.connect (() => pin_toggled (note));
 
             update_labels ();
+            update_pin_style ();
+        }
+
+        private void update_pin_style () {
+            if (note.pinned) {
+                pin_button.remove_css_class ("dim-label");
+                pin_button.tooltip_text = _("Unpin note");
+            } else {
+                pin_button.add_css_class ("dim-label");
+                pin_button.tooltip_text = _("Pin note");
+            }
         }
 
         private void update_labels () {

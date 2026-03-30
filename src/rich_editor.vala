@@ -8,13 +8,12 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.ToggleButton  underline_button;
         [GtkChild] unowned Gtk.ToggleButton  code_button;
         [GtkChild] unowned Gtk.ToggleButton  list_button;
-[GtkChild] unowned Gtk.ToggleButton  preview_button;
+        [GtkChild] unowned Gtk.ToggleButton  preview_button;
         [GtkChild] unowned Gtk.TextView      text_view;
         [GtkChild] unowned Gtk.TextView      preview_view;
         [GtkChild] unowned Gtk.ScrolledWindow preview_scroll;
         [GtkChild] unowned Gtk.Paned         preview_pane;
         [GtkChild] unowned Gtk.Label         position_label;
-        [GtkChild] unowned Gtk.Button        export_button;
 
         private Gtk.TextTag     tag_bold;
         private Gtk.TextTag     tag_italic;

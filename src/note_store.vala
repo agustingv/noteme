@@ -37,7 +37,10 @@ namespace NoteMe {
                 warning ("Could not load notes: %s", e.message);
             }
 
-            notes.sort ((a, b) => strcmp (b.created_at, a.created_at));
+            notes.sort ((a, b) => {
+                if (a.pinned != b.pinned) return a.pinned ? -1 : 1;
+                return strcmp (b.created_at, a.created_at);
+            });
             foreach (var note in notes)
                 _store.append (note);
         }

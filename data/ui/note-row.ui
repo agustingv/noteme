@@ -43,5 +43,19 @@
       </object>
     </child>
 
+    <!-- Pin button -->
+    <child>
+      <object class="GtkButton" id="pin_button">
+        <property name="icon-name">view-pin-symbolic</property>
+        <property name="valign">center</property>
+        <property name="margin-end">4</property>
+        <property name="tooltip-text" translatable="yes">Pin note</property>
+        <style>
+          <class name="flat"/>
+          <class name="image-button"/>
+        </style>
+      </object>
+    </child>
+
   </template>
 </interface>

@@ -31,8 +31,22 @@ namespace NoteMe {
             });
             var filter_model = new Gtk.FilterListModel (store.store, custom_filter);
 
-            notes_list.bind_model (filter_model, (obj) => {
-                return new NoteRow ((Note) obj);
+            var sorter = new Gtk.CustomSorter ((a, b) => {
+                var na = (Note) a;
+                var nb = (Note) b;
+                if (na.pinned != nb.pinned) return na.pinned ? -1 : 1;
+                return strcmp (nb.created_at, na.created_at);
+            });
+            var sort_model = new Gtk.SortListModel (filter_model, sorter);
+
+            notes_list.bind_model (sort_model, (obj) => {
+                var note_row = new NoteRow ((Note) obj);
+                note_row.pin_toggled.connect ((note) => {
+                    note.pinned = !note.pinned;
+                    store.save (note);
+                    sorter.changed (Gtk.SorterChange.DIFFERENT);
+                });
+                return note_row;
             });
 
             notes_list.row_selected.connect (on_row_selected);

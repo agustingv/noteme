@@ -21,10 +21,10 @@ namespace NoteMe {
             // Font picker row
             var font_row = new Adw.ActionRow ();
             font_row.title    = _("Font");
-            font_row.subtitle = prefs.editor_font_desc;
+            font_row.subtitle = prefs.editor_font_desc ?? "Sans 12";
 
             var font_btn = new Gtk.FontDialogButton (new Gtk.FontDialog ());
-            font_btn.font_desc = Pango.FontDescription.from_string (prefs.editor_font_desc);
+            font_btn.font_desc = Pango.FontDescription.from_string (prefs.editor_font_desc ?? "Sans 12");
             font_btn.level     = Gtk.FontLevel.FONT;
             font_btn.valign    = Gtk.Align.CENTER;
             font_row.add_suffix (font_btn);

@@ -5,9 +5,10 @@ namespace NoteMe {
         private string config_path;
         private KeyFile keyfile;
 
-        public string editor_font_desc { get; set; default = "Sans 12"; }
+        public string? editor_font_desc { get; set; }
 
         public Preferences () {
+            editor_font_desc = "Sans 12";
             var config_dir = Path.build_filename (
                 Environment.get_user_config_dir (), "noteme"
             );
@@ -25,7 +26,7 @@ namespace NoteMe {
         }
 
         public void save () {
-            keyfile.set_string ("Editor", "font-desc", editor_font_desc);
+            keyfile.set_string ("Editor", "font-desc", editor_font_desc ?? "Sans 12");
             try {
                 keyfile.save_to_file (config_path);
             } catch (Error e) {
