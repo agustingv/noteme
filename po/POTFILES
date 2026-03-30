@@ -2,5 +2,12 @@ src/main.vala
 src/application.vala
 src/preferences_dialog.vala
 src/main_window.vala
+src/note_row.vala
+src/rich_editor.vala
+src/word_count_extension.vala
+src/note_info_extension.vala
+src/image_extension.vala
+src/extensions_dialog.vala
 data/ui/main-window.ui
+data/ui/note-row.ui
 data/ui/rich-editor.ui
