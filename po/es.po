@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: noteme 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/example/gnotes/issues\n"
 "POT-Creation-Date: 2026-03-28 00:00+0000\n"
-"PO-Revision-Date: 2026-03-28 00:00+0000\n"
+"PO-Revision-Date: 2026-03-30 00:00+0000\n"
 "Last-Translator: NoteMe Contributors\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -119,3 +119,121 @@ msgstr "Fuente"
 # About dialog
 msgid "A simple note-taking app built with GTK4 and Vala."
 msgstr "Una aplicación sencilla de notas construida con GTK4 y Vala."
+
+# Note row — pin button
+msgid "Pin note"
+msgstr "Fijar nota"
+
+msgid "Unpin note"
+msgstr "Desfijar nota"
+
+# Rich editor — export
+msgid "Export to file"
+msgstr "Exportar a archivo"
+
+msgid "Export Note"
+msgstr "Exportar nota"
+
+msgid "Markdown files"
+msgstr "Archivos Markdown"
+
+msgid "Text files"
+msgstr "Archivos de texto"
+
+msgid "All files"
+msgstr "Todos los archivos"
+
+# Main menu
+msgid "Extensions"
+msgstr "Extensiones"
+
+# Extensions dialog
+msgid "Installed Extensions"
+msgstr "Extensiones instaladas"
+
+msgid "External plugins can be placed in ~/.local/share/noteme/plugins/ as .so files."
+msgstr "Los complementos externos se pueden colocar en ~/.local/share/noteme/plugins/ como archivos .so."
+
+# Word Count extension
+msgid "Word Count"
+msgstr "Contador de palabras"
+
+msgid "Shows word and character count in the editor toolbar."
+msgstr "Muestra el recuento de palabras y caracteres en la barra de herramientas."
+
+msgid "%d words · %d chars"
+msgstr "%d palabras · %d caracteres"
+
+# Note Info extension
+msgid "Note Info"
+msgstr "Info de nota"
+
+msgid "Shows detailed statistics about the current note."
+msgstr "Muestra estadísticas detalladas sobre la nota actual."
+
+msgid "Note Information"
+msgstr "Información de la nota"
+
+msgid "General"
+msgstr "General"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Created"
+msgstr "Creada"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Pinned"
+msgstr "Fijada"
+
+msgid "Untitled"
+msgstr "Sin título"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "No"
+msgstr "No"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Words"
+msgstr "Palabras"
+
+msgid "Characters"
+msgstr "Caracteres"
+
+msgid "Characters (no spaces)"
+msgstr "Caracteres (sin espacios)"
+
+msgid "Lines"
+msgstr "Líneas"
+
+msgid "Estimated reading time"
+msgstr "Tiempo de lectura estimado"
+
+msgid "< 1 min"
+msgstr "< 1 min"
+
+msgid "%d min"
+msgstr "%d min"
+
+# Image extension
+msgid "Insert Image"
+msgstr "Insertar imagen"
+
+msgid "Adds a toolbar button for inserting images into notes."
+msgstr "Agrega un botón en la barra de herramientas para insertar imágenes en las notas."
+
+msgid "Select Image"
+msgstr "Seleccionar imagen"
+
+msgid "Images"
+msgstr "Imágenes"
