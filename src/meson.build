@@ -26,6 +26,8 @@ sources = files(
   'main_window.vala',
   'extension.vala',
   'word_count_extension.vala',
+  'note_info_extension.vala',
+  'image_extension.vala',
   'extensions_dialog.vala',
 ) + [config_vala]
 
@@ -33,6 +35,7 @@ dependencies = [
   dependency('gtk4'),
   dependency('libadwaita-1', version: '>= 1.4'),
   dependency('gmodule-2.0'),
+  meson.get_compiler('c').find_library('m', required: false),
 ]
 
 executable('noteme',

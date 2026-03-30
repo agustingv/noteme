@@ -16,6 +16,8 @@ namespace NoteMe {
             prefs       = new Preferences ();
             ext_manager = new ExtensionManager ();
             ext_manager.register (new WordCountExtension ());
+            ext_manager.register (new NoteInfoExtension ());
+            ext_manager.register (new ImageExtension ());
             ext_manager.load_from_directory (
                 Path.build_filename (Environment.get_user_data_dir (), "noteme", "plugins")
             );

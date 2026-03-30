@@ -44,6 +44,11 @@ namespace NoteMe {
             return btn;
         }
 
+        // Insert an image at the editor's current cursor position
+        public void insert_image (string path) {
+            editor?.insert_image_at_cursor (path);
+        }
+
         // Add a widget to the editor footer (left of the cursor-position label)
         public void add_footer_widget (Gtk.Widget w) {
             editor?.add_footer_extension_widget (w);
