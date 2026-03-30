@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#62a0ea"/>
+      <stop offset="1" stop-color="#1c71d8"/>
+    </linearGradient>
+  </defs>
+  <!-- App background -->
+  <rect width="128" height="128" rx="22" fill="url(#bg)"/>
+  <!-- Note card -->
+  <rect x="22" y="18" width="84" height="96" rx="10" fill="white"/>
+  <!-- Folded corner -->
+  <polygon points="84,18 106,40 84,40" fill="#deddda"/>
+  <!-- Title highlight -->
+  <rect x="34" y="34" width="36" height="8" rx="4" fill="#3584e4"/>
+  <!-- Body lines -->
+  <rect x="34" y="52" width="60" height="5" rx="2.5" fill="#c0bfbc"/>
+  <rect x="34" y="65" width="60" height="5" rx="2.5" fill="#c0bfbc"/>
+  <rect x="34" y="78" width="60" height="5" rx="2.5" fill="#c0bfbc"/>
+  <rect x="34" y="91" width="42" height="5" rx="2.5" fill="#c0bfbc"/>
+</svg>

@@ -37,6 +37,40 @@ ninja -C build
 ./build/src/noteme
 ```
 
+## Flatpak
+
+The manifest is `com.github.agustingv.noteme.json` at the root of the repository.
+
+### Prerequisites
+
+Install the GNOME runtime and SDK (one-time):
+
+```sh
+flatpak install flathub org.gnome.Platform//47 org.gnome.Sdk//47
+```
+
+### Build and install
+
+```sh
+flatpak-builder --user --install --force-clean .flatpak-build com.github.agustingv.noteme.json
+```
+
+`--force-clean` removes any previous build directory. The result is installed under your user Flatpak store.
+
+### Run
+
+```sh
+flatpak run com.github.agustingv.noteme
+```
+
+### Uninstall
+
+```sh
+flatpak uninstall com.github.agustingv.noteme
+```
+
+> **Note on app data inside Flatpak:** paths that normally resolve to `~/.local/share/noteme/` and `~/.config/noteme/` are transparently redirected by the sandbox to `~/.var/app/com.github.agustingv.noteme/data/noteme/` and `~/.var/app/com.github.agustingv.noteme/config/noteme/` respectively. Image files inserted into notes are stored in the sandboxed data directory as well.
+
 ## Installing
 
 ```sh
