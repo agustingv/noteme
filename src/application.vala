@@ -2,7 +2,8 @@ namespace NoteMe {
 
     public class Application : Adw.Application {
 
-        private Preferences prefs;
+        private Preferences      prefs;
+        private ExtensionManager ext_manager;
 
         public Application () {
             Object (
@@ -12,7 +13,14 @@ namespace NoteMe {
         }
 
         construct {
-            prefs = new Preferences ();
+            prefs       = new Preferences ();
+            ext_manager = new ExtensionManager ();
+            ext_manager.register (new WordCountExtension ());
+            ext_manager.register (new NoteInfoExtension ());
+            ext_manager.register (new ImageExtension ());
+            ext_manager.load_from_directory (
+                Path.build_filename (Environment.get_user_data_dir (), "noteme", "plugins")
+            );
 
             var about_action = new SimpleAction ("about", null);
             about_action.activate.connect (show_about);
@@ -22,13 +30,17 @@ namespace NoteMe {
             prefs_action.activate.connect (show_preferences);
             add_action (prefs_action);
 
+            var ext_action = new SimpleAction ("extensions", null);
+            ext_action.activate.connect (show_extensions);
+            add_action (ext_action);
+
             set_accels_for_action ("app.preferences", { "<Ctrl>comma" });
         }
 
         protected override void activate () {
             var win = this.active_window;
             if (win == null) {
-                win = new NoteMe.MainWindow (this, prefs);
+                win = new NoteMe.MainWindow (this, prefs, ext_manager);
             }
             win.present ();
         }
@@ -41,6 +53,11 @@ namespace NoteMe {
                         ((MainWindow) w).apply_font_settings ();
                 }
             });
+            dialog.present (active_window);
+        }
+
+        private void show_extensions (SimpleAction _action, Variant? _param) {
+            var dialog = new ExtensionsDialog (ext_manager);
             dialog.present (active_window);
         }
 

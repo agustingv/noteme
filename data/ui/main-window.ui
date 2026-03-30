@@ -9,6 +9,10 @@
         <attribute name="label" translatable="yes">Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Extensions</attribute>
+        <attribute name="action">app.extensions</attribute>
+      </item>
     </section>
     <section>
       <item>

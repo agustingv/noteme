@@ -14,6 +14,8 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.ScrolledWindow preview_scroll;
         [GtkChild] unowned Gtk.Paned         preview_pane;
         [GtkChild] unowned Gtk.Label         position_label;
+        [GtkChild] unowned Gtk.Box           extension_box;
+        [GtkChild] unowned Gtk.Box           footer_extension_box;
 
         private Gtk.TextTag     tag_bold;
         private Gtk.TextTag     tag_italic;
@@ -21,6 +23,10 @@ namespace NoteMe {
         private Gtk.TextTag     tag_code;
         private Gtk.CssProvider font_provider;
         private bool            updating = false;
+
+        // Maps each in-buffer child anchor to its image source path
+        private HashTable<Gtk.TextChildAnchor, string> anchor_images =
+            new HashTable<Gtk.TextChildAnchor, string> (direct_hash, direct_equal);
 
         // Preview tags (owned by preview_view.buffer's tag table)
         private Gtk.TextTag preview_h1;
@@ -307,7 +313,10 @@ namespace NoteMe {
                     int close = markup.index_of (">", i);
                     if (close < 0) break;
                     string tag = markup.substring (i + 1, close - i - 1);
-                    switch (tag) {
+                    if (tag.has_prefix ("img ")) {
+                        string? src = parse_img_src (tag);
+                        sb.append ("![image](%s)".printf (src ?? ""));
+                    } else switch (tag) {
                         case "b":     sb.append ("**"); break;
                         case "/b":    sb.append ("**"); break;
                         case "i":     sb.append ("*");  break;
@@ -518,6 +527,33 @@ namespace NoteMe {
                 buffer.remove_tag (tag, start, end);
         }
 
+        public void add_extension_widget (Gtk.Widget w) {
+            extension_box.append (w);
+        }
+
+        public void remove_extension_widget (Gtk.Widget w) {
+            extension_box.remove (w);
+        }
+
+        // Insert an image at the current cursor position
+        public void insert_image_at_cursor (string src_path) {
+            var buffer = text_view.buffer;
+            Gtk.TextIter cursor;
+            buffer.get_iter_at_mark (out cursor, buffer.get_insert ());
+            var anchor = buffer.create_child_anchor (cursor);
+            anchor_images.set (anchor, src_path);
+            text_view.add_child_at_anchor (make_image_widget (src_path), anchor);
+            if (!updating) changed ();
+        }
+
+        public void add_footer_extension_widget (Gtk.Widget w) {
+            footer_extension_box.append (w);
+        }
+
+        public void remove_footer_extension_widget (Gtk.Widget w) {
+            footer_extension_box.remove (w);
+        }
+
         public new void grab_focus () {
             text_view.grab_focus ();
         }
@@ -544,6 +580,14 @@ namespace NoteMe {
             buffer.get_start_iter (out iter);
 
             while (!iter.is_end ()) {
+                var anchor = iter.get_child_anchor ();
+                if (anchor != null) {
+                    var src = anchor_images.get (anchor);
+                    if (src != null)
+                        sb.append ("<img src=\"%s\"/>".printf (GLib.Markup.escape_text (src)));
+                    iter.forward_char ();
+                    continue;
+                }
                 foreach (unowned Gtk.TextTag tag in iter.get_toggled_tags (false))
                     sb.append (close_tag (tag.name));
                 foreach (unowned Gtk.TextTag tag in iter.get_toggled_tags (true))
@@ -601,19 +645,17 @@ namespace NoteMe {
         private void parse_markup (string markup) {
             var buffer = text_view.buffer;
             buffer.set_text ("", 0);
+            anchor_images.remove_all ();
 
-            // Collect plain text + (name, char_start, char_end) triples
-            var plain    = new StringBuilder ();
+            // Tag open/close stack (parallel arrays)
+            var s_names  = new GenericArray<string> ();
+            var s_starts = new GenericArray<int> ();
+            // Collected tag ranges to apply at the end
             var t_names  = new GenericArray<string> ();
             var t_starts = new GenericArray<int> ();
             var t_ends   = new GenericArray<int> ();
 
-            // stack: parallel arrays
-            var s_names  = new GenericArray<string> ();
-            var s_starts = new GenericArray<int> ();
-
-            int bi = 0;          // byte index into markup
-            int ci = 0;          // char offset in plain text
+            int bi = 0;
 
             while (bi < markup.length) {
                 char b = markup[bi];
@@ -624,45 +666,63 @@ namespace NoteMe {
                     string tag_str = markup.substring (bi + 1, close - bi - 1);
                     bi = close + 1;
 
-                    if (tag_str == "b" || tag_str == "i" || tag_str == "u" || tag_str == "code") {
+                    if (tag_str.has_prefix ("img ")) {
+                        // Self-closing image tag: <img src="..."/>
+                        string? src = parse_img_src (tag_str);
+                        if (src != null) {
+                            Gtk.TextIter end_it;
+                            buffer.get_end_iter (out end_it);
+                            var anchor = buffer.create_child_anchor (end_it);
+                            anchor_images.set (anchor, src);
+                            text_view.add_child_at_anchor (make_image_widget (src), anchor);
+                        }
+                    } else if (tag_str == "b" || tag_str == "i" ||
+                               tag_str == "u" || tag_str == "code") {
+                        Gtk.TextIter end_it;
+                        buffer.get_end_iter (out end_it);
                         string name = tag_str == "b" ? "bold" : tag_str == "i" ? "italic" :
                                       tag_str == "u" ? "underline" : "code";
                         s_names.add (name);
-                        s_starts.add (ci);
+                        s_starts.add (end_it.get_offset ());
                     } else if (s_names.length > 0) {
-                        // closing tag — pop last opened
+                        Gtk.TextIter end_it;
+                        buffer.get_end_iter (out end_it);
                         int last = (int) s_names.length - 1;
-                        t_names.add (s_names[last]);
+                        t_names.add  (s_names[last]);
                         t_starts.add (s_starts[last]);
-                        t_ends.add (ci);
-                        s_names.remove_index (last);
+                        t_ends.add   (end_it.get_offset ());
+                        s_names.remove_index  (last);
                         s_starts.remove_index (last);
                     }
 
-                } else if (b == '&') {
-                    int semi = markup.index_of (";", bi);
-                    if (semi >= 0) {
-                        string entity = markup.substring (bi + 1, semi - bi - 1);
-                        unichar ec = 0;
-                        if      (entity == "lt")  ec = '<';
-                        else if (entity == "gt")  ec = '>';
-                        else if (entity == "amp") ec = '&';
-                        if (ec != 0) { plain.append_unichar (ec); ci++; }
-                        bi = semi + 1;
-                    } else {
-                        plain.append_c ('&'); ci++; bi++;
-                    }
-
                 } else {
-                    unichar uc = markup.get_char (bi);
-                    plain.append_unichar (uc);
-                    ci++;
-                    bi += uc.to_utf8 (null);
+                    // Collect a plain-text chunk up to the next tag
+                    var chunk = new StringBuilder ();
+                    while (bi < markup.length && markup[bi] != '<') {
+                        if (markup[bi] == '&') {
+                            int semi = markup.index_of (";", bi);
+                            if (semi >= 0) {
+                                string entity = markup.substring (bi + 1, semi - bi - 1);
+                                if      (entity == "lt")  chunk.append_c ('<');
+                                else if (entity == "gt")  chunk.append_c ('>');
+                                else if (entity == "amp") chunk.append_c ('&');
+                                bi = semi + 1;
+                            } else { chunk.append_c ('&'); bi++; }
+                        } else {
+                            unichar c = markup.get_char (bi);
+                            chunk.append_unichar (c);
+                            bi += (int) c.to_utf8 (null);
+                        }
+                    }
+                    if (chunk.len > 0) {
+                        Gtk.TextIter end_it;
+                        buffer.get_end_iter (out end_it);
+                        buffer.insert (ref end_it, chunk.str, -1);
+                    }
                 }
             }
 
-            buffer.set_text (plain.str, -1);
-
+            // Apply all collected tag ranges
             for (int k = 0; k < t_names.length; k++) {
                 Gtk.TextIter s, e;
                 buffer.get_iter_at_offset (out s, t_starts[k]);
@@ -670,6 +730,30 @@ namespace NoteMe {
                 var tag = buffer.tag_table.lookup (t_names[k]);
                 if (tag != null) buffer.apply_tag (tag, s, e);
             }
+        }
+
+        private string? parse_img_src (string tag_str) {
+            int start = tag_str.index_of ("src=\"");
+            if (start < 0) return null;
+            start += 5;
+            int end = tag_str.index_of ("\"", start);
+            if (end < 0) return null;
+            return tag_str.substring (start, end - start)
+                          .replace ("&amp;",  "&")
+                          .replace ("&lt;",   "<")
+                          .replace ("&gt;",   ">")
+                          .replace ("&quot;", "\"");
+        }
+
+        private Gtk.Widget make_image_widget (string path) {
+            var picture = new Gtk.Picture.for_filename (path);
+            picture.content_fit    = Gtk.ContentFit.SCALE_DOWN;
+            picture.width_request  = 320;
+            picture.height_request = 240;
+            picture.margin_top     = 4;
+            picture.margin_bottom  = 4;
+            picture.halign         = Gtk.Align.START;
+            return picture;
         }
     }
 }
