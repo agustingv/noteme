@@ -2,7 +2,7 @@
 Name=NoteMe
 Comment=A simple note-taking application
 Exec=noteme
-Icon=com.github.agustingv.noteme
+Icon=io.github.agustingv.noteme
 Terminal=false
 Type=Application
 Categories=Office;TextEditor;

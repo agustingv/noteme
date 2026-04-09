@@ -39,7 +39,7 @@ ninja -C build
 
 ## Flatpak
 
-The manifest is `com.github.agustingv.noteme.json` at the root of the repository.
+The manifest is `io.github.agustingv.noteme.json` at the root of the repository.
 
 ### Prerequisites
 
@@ -52,7 +52,7 @@ flatpak install flathub org.gnome.Platform//47 org.gnome.Sdk//47
 ### Build and install
 
 ```sh
-flatpak-builder --user --install --force-clean .flatpak-build com.github.agustingv.noteme.json
+flatpak-builder --user --install --force-clean .flatpak-build io.github.agustingv.noteme.json
 ```
 
 `--force-clean` removes any previous build directory. The result is installed under your user Flatpak store.
@@ -60,16 +60,16 @@ flatpak-builder --user --install --force-clean .flatpak-build com.github.agustin
 ### Run
 
 ```sh
-flatpak run com.github.agustingv.noteme
+flatpak run io.github.agustingv.noteme
 ```
 
 ### Uninstall
 
 ```sh
-flatpak uninstall com.github.agustingv.noteme
+flatpak uninstall io.github.agustingv.noteme
 ```
 
-> **Note on app data inside Flatpak:** paths that normally resolve to `~/.local/share/noteme/` and `~/.config/noteme/` are transparently redirected by the sandbox to `~/.var/app/com.github.agustingv.noteme/data/noteme/` and `~/.var/app/com.github.agustingv.noteme/config/noteme/` respectively. Image files inserted into notes are stored in the sandboxed data directory as well.
+> **Note on app data inside Flatpak:** paths that normally resolve to `~/.local/share/noteme/` and `~/.config/noteme/` are transparently redirected by the sandbox to `~/.var/app/io.github.agustingv.noteme/data/noteme/` and `~/.var/app/io.github.agustingv.noteme/config/noteme/` respectively. Image files inserted into notes are stored in the sandboxed data directory as well.
 
 ## Installing
 

@@ -12,7 +12,7 @@ namespace NoteMe {
 
             var group = new Adw.PreferencesGroup ();
             group.title       = _("Installed Extensions");
-            group.description = _("External plugins can be placed in ~/.local/share/noteme/plugins/ as .so files.");
+            group.description = _("External plugins can be placed in %s as .so files. See README.md in https://github.com/agustingv/noteme how to create your own.").printf (Path.build_filename (Environment.get_user_data_dir (), "noteme", "plugins"));
             page.add (group);
 
             var extensions = manager.get_extensions ();

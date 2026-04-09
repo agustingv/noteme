@@ -23,7 +23,8 @@ namespace NoteMe
             ext_manager.register (new NoteInfoExtension ());
             ext_manager.register (new ImageExtension ());
             ext_manager.load_from_directory (
-                Path.build_filename (Environment.get_user_data_dir (), "noteme", "plugins")
+                // Path differs between running from build dir and installed app, but this is fine since both will be in the same place relative to the executable
+                Path.build_filename (Environment.get_user_data_dir (), "noteme", "extensions")
             );
 
             var about_action = new SimpleAction ("about", null);
