@@ -1,19 +1,23 @@
-namespace NoteMe {
+namespace NoteMe 
+{
 
-    public class Note : Object {
-        public string title  { get; set; default = ""; }
-        public string body   { get; set; default = ""; }
-        public string color  { get; set; default = ""; }
+    public class Note : Object 
+    {
+        public string title { get; set; default = ""; }
+        public string body { get; set; default = ""; }
+        public string color { get; set; default = ""; }
         public bool   pinned { get; set; default = false; }
         public string created_at { get; construct; }
 
-        public Note (string title = "", string body = "") {
+        public Note (string title = "", string body = "") 
+        {
             Object (created_at: new DateTime.now_local ().format ("%Y-%m-%dT%H:%M:%S"));
             this.title = title;
             this.body  = body;
         }
 
-        private Note.restore (string created_at, string title, string body, string color, bool pinned) {
+        private Note.restore (string created_at, string title, string body, string color, bool pinned) 
+        {
             Object (created_at: created_at);
             this.title  = title;
             this.body   = body;
@@ -22,7 +26,8 @@ namespace NoteMe {
         }
 
         // Serialise to a simple key=value block separated by blank lines.
-        public string to_string () {
+        public string to_string () 
+        {
             return "title=%s\nbody=%s\ncreated_at=%s\ncolor=%s\npinned=%s".printf (
                 title.replace ("\n", "\\n"),
                 body.replace  ("\n", "\\n"),
@@ -32,15 +37,17 @@ namespace NoteMe {
             );
         }
 
-        public static Note? from_string (string data) {
-            string title      = "";
-            string body       = "";
-            string color      = "";
-            bool   pinned     = false;
+        public static Note? from_string (string data) 
+        {
+            string title = "";
+            string body = "";
+            string color = "";
+            bool   pinned = false;
             string created_at = new DateTime.now_local ().format ("%Y-%m-%dT%H:%M:%S");
 
             string[] lines = data.split ("\n");
-            for (int i = 0; i < lines.length; i++) {
+            for (int i = 0; i < lines.length; i++) 
+            {
                 var line = lines[i];
                 if (line.has_prefix ("title="))
                     title = line.substring (6).replace ("\\n", "\n");

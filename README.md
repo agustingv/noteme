@@ -6,10 +6,16 @@ A simple note-taking application for GNOME, built with GTK4, libadwaita, and Val
 
 - Create, edit, and delete notes
 - Rich text formatting: **Bold**, *Italic*, Underline, `Inline Code`, and Bullet Lists
+- Markdown headings (`#`, `##`, `###`) and blockquotes (`>`) in the editor
+- Live markdown preview (side-by-side)
+- Pin notes to keep them at the top of the list
 - Color labels for notes
+- Insert images into notes
+- Export notes to Markdown (`.md`) or plain text (`.txt`)
 - Search notes by title
-- Notes sorted by creation time (newest first)
+- Notes sorted by date (pinned notes first, then newest first)
 - Customizable editor font
+- Cursor position indicator (line and column)
 - Notes saved automatically
 - English and Spanish interface
 
@@ -39,7 +45,7 @@ ninja -C build
 
 ## Flatpak
 
-The manifest is `io.github.agustingv.noteme.json` at the root of the repository.
+The manifest is `io.github.agustingv.noteme.yml` at the root of the repository.
 
 ### Prerequisites
 
@@ -52,7 +58,7 @@ flatpak install flathub org.gnome.Platform//47 org.gnome.Sdk//47
 ### Build and install
 
 ```sh
-flatpak-builder --user --install --force-clean .flatpak-build io.github.agustingv.noteme.json
+flatpak-builder --user --install --force-clean .flatpak-build io.github.agustingv.noteme.yml
 ```
 
 `--force-clean` removes any previous build directory. The result is installed under your user Flatpak store.
@@ -78,6 +84,17 @@ meson setup build --prefix=/usr
 ninja -C build
 sudo ninja -C build install
 ```
+
+## Keyboard shortcuts
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl+B` | Bold |
+| `Ctrl+I` | Italic |
+| `Ctrl+U` | Underline |
+| `Ctrl+\`` | Inline code |
+| `Ctrl+Shift+L` | Toggle bullet list |
+| `Ctrl+Shift+P` | Toggle markdown preview |
 
 ## Extensions
 
