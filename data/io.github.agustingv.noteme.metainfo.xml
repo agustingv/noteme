@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.github.agustingv.noteme</id>
+  <id>io.github.agustingv.noteme</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>NoteMe</name>
   <summary>A simple note-taking application</summary>
   <description>
-    <p>NoteMe is a minimal GNOME note-taking application built with GTK4 and libadwaita.</p>
+    <p>NoteMe is a minimal GNOME note-taking application.</p>
     <ul>
       <li>Create, edit, and delete notes</li>
       <li>Notes are saved automatically</li>

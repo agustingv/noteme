@@ -18,17 +18,17 @@ sources = files(
   'main.vala',
   'application.vala',
   'preferences.vala',
-  'preferences_dialog.vala',
   'note.vala',
   'note_store.vala',
   'note_row.vala',
   'rich_editor.vala',
   'main_window.vala',
   'extension.vala',
-  'word_count_extension.vala',
-  'note_info_extension.vala',
-  'image_extension.vala',
-  'extensions_dialog.vala',
+  'extensions/word_count_extension.vala',
+  'extensions/note_info_extension.vala',
+  'extensions/image_extension.vala',
+  'dialogs/preferences_dialog.vala',
+  'dialogs/extensions_dialog.vala'
 ) + [config_vala]
 
 dependencies = [

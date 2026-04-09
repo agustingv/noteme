@@ -1,6 +1,6 @@
 namespace NoteMe {
 
-    [GtkTemplate (ui = "/com/github/agustingv/noteme/ui/main-window.ui")]
+    [GtkTemplate (ui = "/io/github/agustingv/noteme/ui/main-window.ui")]
     public class MainWindow : Adw.ApplicationWindow {
 
         [GtkChild] unowned Gtk.ListBox      notes_list;

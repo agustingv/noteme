@@ -1,6 +1,6 @@
 namespace NoteMe {
 
-    [GtkTemplate (ui = "/com/github/agustingv/noteme/ui/note-row.ui")]
+    [GtkTemplate (ui = "/io/github/agustingv/noteme/ui/note-row.ui")]
     public class NoteRow : Gtk.Box {
 
         [GtkChild] unowned Gtk.Label       title_label;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/agustingv/noteme">
+  <gresource prefix="/io/github/agustingv/noteme">
     <file preprocess="xml-stripblanks">ui/main-window.ui</file>
     <file preprocess="xml-stripblanks">ui/note-row.ui</file>
     <file preprocess="xml-stripblanks">ui/rich-editor.ui</file>

@@ -1,7 +1,9 @@
-namespace NoteMe {
+namespace NoteMe 
+{
 
-    [GtkTemplate (ui = "/com/github/agustingv/noteme/ui/rich-editor.ui")]
-    public class RichEditor : Gtk.Box {
+    [GtkTemplate (ui = "/io/github/agustingv/noteme/ui/rich-editor.ui")]
+    public class RichEditor : Gtk.Box 
+    {
 
         [GtkChild] unowned Gtk.ToggleButton  bold_button;
         [GtkChild] unowned Gtk.ToggleButton  italic_button;
@@ -61,7 +63,6 @@ namespace NoteMe {
             tag_code.paragraph_background = "rgba(128,128,128,0.08)";
             buffer.tag_table.add (tag_code);
 
-            // Preview tags — separate tag table on preview_view.buffer
             var pb = preview_view.buffer;
             preview_h1 = new Gtk.TextTag (null);
             preview_h1.weight = Pango.Weight.BOLD;
@@ -99,12 +100,13 @@ namespace NoteMe {
             preview_underline.underline = Pango.Underline.SINGLE;
             pb.tag_table.add (preview_underline);
 
-            // Hide preview pane until toggled
             preview_scroll.visible = false;
 
-            // Font provider — registered once, CSS updated via set_font_desc()
             font_provider = new Gtk.CssProvider ();
             text_view.add_css_class ("noteme-editor");
+
+            // it is deprecated since 4.10 versión and will be disapear en gtk 5, but I don't know other way to update the font when is change in settings
+            // TODO: find a way to update the font without using deprecated API
             Gtk.StyleContext.add_provider_for_display (
                 Gdk.Display.get_default (),
                 font_provider,
@@ -244,7 +246,7 @@ namespace NoteMe {
             update_toolbar_state ();
         }
 
-        // ── Markdown Preview ──────────────────────────────────────────────────
+        
 
         [GtkCallback]
         private void on_preview_toggled () {
@@ -390,7 +392,8 @@ namespace NoteMe {
             }
         }
 
-        private void render_tagged_line (Gtk.TextBuffer pb, string text, Gtk.TextTag tag) {
+        private void render_tagged_line (Gtk.TextBuffer pb, string text, Gtk.TextTag tag) 
+        {
             int from = pb_end_offset (pb);
             render_inline (pb, text);
             pb_apply_from (pb, tag, from);
@@ -401,19 +404,27 @@ namespace NoteMe {
             int len = text.length;
             var plain = new StringBuilder ();
 
-            while (i < len) {
+            while (i < len) 
+            {
                 if (i + 1 < len && text[i] == '*' && text[i + 1] == '*') {
                     // **bold**
                     flush_plain (pb, plain);
                     int close = text.index_of ("**", i + 2);
-                    if (close > i + 1) {
+                    if (close > i + 1) 
+                    {
                         int from = pb_end_offset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 2, close - i - 2), -1);
                         pb_apply_from (pb, preview_bold, from);
                         i = close + 2;
-                    } else { plain.append ("**"); i += 2; }
-                } else if (text[i] == '*') {
+                    } 
+                    else 
+                    { 
+                        plain.append ("**"); i += 2; 
+                    }
+                } 
+                else if (text[i] == '*') 
+                {
                     // *italic*
                     flush_plain (pb, plain);
                     int close = text.index_of ("*", i + 1);
@@ -424,29 +435,45 @@ namespace NoteMe {
                         pb_apply_from (pb, preview_italic, from);
                         i = close + 1;
                     } else { plain.append_c ('*'); i++; }
-                } else if (i + 1 < len && text[i] == '_' && text[i + 1] == '_') {
+                } 
+                else if (i + 1 < len && text[i] == '_' && text[i + 1] == '_') 
+                {
                     // __underline__
                     flush_plain (pb, plain);
                     int close = text.index_of ("__", i + 2);
-                    if (close > i + 1) {
+                    if (close > i + 1) 
+                    {
                         int from = pb_end_offset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 2, close - i - 2), -1);
                         pb_apply_from (pb, preview_underline, from);
                         i = close + 2;
-                    } else { plain.append ("__"); i += 2; }
-                } else if (text[i] == '`') {
+                    } 
+                    else 
+                    { 
+                        plain.append ("__"); i += 2; 
+                    }
+                } 
+                else if (text[i] == '`') 
+                {
                     // `code`
                     flush_plain (pb, plain);
                     int close = text.index_of ("`", i + 1);
-                    if (close > i) {
+                    if (close > i) 
+                    {
                         int from = pb_end_offset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 1, close - i - 1), -1);
                         pb_apply_from (pb, preview_code, from);
                         i = close + 1;
-                    } else { plain.append_c ('`'); i++; }
-                } else {
+                    } 
+                    else 
+                    { 
+                        plain.append_c ('`'); i++; 
+                    }
+                } 
+                else 
+                {
                     unichar c = text.get_char (i);
                     plain.append_unichar (c);
                     i += (int) c.to_utf8 (null);
@@ -455,7 +482,8 @@ namespace NoteMe {
             flush_plain (pb, plain);
         }
 
-        private void flush_plain (Gtk.TextBuffer pb, StringBuilder plain) {
+        private void flush_plain (Gtk.TextBuffer pb, StringBuilder plain) 
+        {
             if (plain.len == 0) return;
             Gtk.TextIter it;
             pb.get_end_iter (out it);
@@ -463,13 +491,15 @@ namespace NoteMe {
             plain.truncate (0);
         }
 
-        private int pb_end_offset (Gtk.TextBuffer pb) {
+        private int pb_end_offset (Gtk.TextBuffer pb) 
+        {
             Gtk.TextIter it;
             pb.get_end_iter (out it);
             return it.get_offset ();
         }
 
-        private void pb_apply_from (Gtk.TextBuffer pb, Gtk.TextTag tag, int from) {
+        private void pb_apply_from (Gtk.TextBuffer pb, Gtk.TextTag tag, int from) 
+        {
             Gtk.TextIter s, e;
             pb.get_iter_at_offset (out s, from);
             pb.get_end_iter (out e);
@@ -477,7 +507,8 @@ namespace NoteMe {
         }
 
         // Returns true if the line beginning at `iter` starts with "• "
-        private bool line_has_bullet (Gtk.TextIter iter) {
+        private bool line_has_bullet (Gtk.TextIter iter) 
+        {
             if (iter.get_char () != '•') return false;
             var next = iter;
             next.forward_char ();
@@ -485,7 +516,8 @@ namespace NoteMe {
         }
 
         // Enter key handler: continue list or exit empty list item
-        private bool on_key_pressed (uint keyval, uint _keycode, Gdk.ModifierType state) {
+        private bool on_key_pressed (uint keyval, uint _keycode, Gdk.ModifierType state) 
+        {
             if (keyval != Gdk.Key.Return && keyval != Gdk.Key.KP_Enter) return false;
             // Ignore if modifier keys are held (Shift+Enter etc.)
             if ((state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)) != 0)
@@ -502,7 +534,8 @@ namespace NoteMe {
             // If cursor is right after "• " (empty list item) → exit list
             var after_bullet = line_start;
             after_bullet.forward_chars (2);
-            if (cursor.compare (after_bullet) <= 0) {
+            if (cursor.compare (after_bullet) <= 0) 
+            {
                 // Delete the bullet and let GTK insert the newline normally
                 buffer.begin_user_action ();
                 buffer.delete (ref line_start, ref after_bullet);
@@ -517,7 +550,8 @@ namespace NoteMe {
             return true;
         }
 
-        private void apply_tag (Gtk.TextTag tag, bool add) {
+        private void apply_tag (Gtk.TextTag tag, bool add) 
+        {
             var buffer = text_view.buffer;
             Gtk.TextIter start, end;
             if (!buffer.get_selection_bounds (out start, out end)) return;
@@ -527,16 +561,19 @@ namespace NoteMe {
                 buffer.remove_tag (tag, start, end);
         }
 
-        public void add_extension_widget (Gtk.Widget w) {
-            extension_box.append (w);
+        public void add_extension_widget (Gtk.Widget widget) 
+        {
+            extension_box.append (widget);
         }
 
-        public void remove_extension_widget (Gtk.Widget w) {
-            extension_box.remove (w);
+        public void remove_extension_widget (Gtk.Widget widget) 
+        {
+            extension_box.remove (widget);
         }
 
         // Insert an image at the current cursor position
-        public void insert_image_at_cursor (string src_path) {
+        public void insert_image_at_cursor (string src_path) 
+        {
             var buffer = text_view.buffer;
             Gtk.TextIter cursor;
             buffer.get_iter_at_mark (out cursor, buffer.get_insert ());
@@ -546,19 +583,23 @@ namespace NoteMe {
             if (!updating) changed ();
         }
 
-        public void add_footer_extension_widget (Gtk.Widget w) {
-            footer_extension_box.append (w);
+        public void add_footer_extension_widget (Gtk.Widget widget) 
+        {
+            footer_extension_box.append (widget);
         }
 
-        public void remove_footer_extension_widget (Gtk.Widget w) {
-            footer_extension_box.remove (w);
+        public void remove_footer_extension_widget (Gtk.Widget widget) 
+        {
+            footer_extension_box.remove (widget);
         }
 
-        public new void grab_focus () {
+        public new void grab_focus () 
+        {
             text_view.grab_focus ();
         }
 
-        public void set_font_desc (string font_desc) {
+        public void set_font_desc (string font_desc) 
+        {
             var desc    = Pango.FontDescription.from_string (font_desc);
             var family  = desc.get_family () ?? "Sans";
             int size    = desc.get_size ();
@@ -571,15 +612,17 @@ namespace NoteMe {
             );
         }
 
-        // ── Serialisation ─────────────────────────────────────────────────────
+        // Serialisation
 
-        public string get_markup () {
+        public string get_markup () 
+        {
             var buffer = text_view.buffer;
             var sb = new StringBuilder ();
             Gtk.TextIter iter;
             buffer.get_start_iter (out iter);
 
-            while (!iter.is_end ()) {
+            while (!iter.is_end ()) 
+            {
                 var anchor = iter.get_child_anchor ();
                 if (anchor != null) {
                     var src = anchor_images.get (anchor);
@@ -605,44 +648,64 @@ namespace NoteMe {
             return sb.str;
         }
 
-        public void set_markup (string markup) {
+        public void set_markup (string markup) 
+        {
             updating = true;
             parse_markup (markup);
             updating = false;
         }
 
         private string open_tag (string? name) {
-            switch (name) {
-                case "bold":      return "<b>";
-                case "italic":    return "<i>";
-                case "underline": return "<u>";
-                case "code":      return "<code>";
-                default:          return "";
+            switch (name) 
+            {
+                case "bold":      
+                    return "<b>";
+                case "italic":    
+                    return "<i>";
+                case "underline": 
+                    return "<u>";
+                case "code":      
+                    return "<code>";
+                default:          
+                    return "";
             }
         }
 
-        private string close_tag (string? name) {
-            switch (name) {
-                case "bold":      return "</b>";
-                case "italic":    return "</i>";
-                case "underline": return "</u>";
-                case "code":      return "</code>";
-                default:          return "";
+        private string close_tag (string? name) 
+        {
+            switch (name) 
+            {
+                case "bold":      
+                    return "</b>";
+                case "italic":    
+                    return "</i>";
+                case "underline": 
+                    return "</u>";
+                case "code":      
+                    return "</code>";
+                default:          
+                    return "";
             }
         }
 
-        private void append_escaped (StringBuilder sb, unichar c) {
-            switch (c) {
-                case '<': sb.append ("&lt;");  break;
-                case '>': sb.append ("&gt;");  break;
-                case '&': sb.append ("&amp;"); break;
-                default:  sb.append_unichar (c); break;
+        private void append_escaped (StringBuilder sb, unichar c) 
+        {
+            switch (c) 
+            {
+                case '<': 
+                    sb.append ("&lt;");  break;
+                case '>': 
+                    sb.append ("&gt;");  break;
+                case '&': 
+                    sb.append ("&amp;"); break;
+                default:  
+                    sb.append_unichar (c); break;
             }
         }
 
-        // ── Deserialisation ───────────────────────────────────────────────────
-
-        private void parse_markup (string markup) {
+        // Deserialisation
+        private void parse_markup (string markup) 
+        {
             var buffer = text_view.buffer;
             buffer.set_text ("", 0);
             anchor_images.remove_all ();
@@ -660,31 +723,37 @@ namespace NoteMe {
             while (bi < markup.length) {
                 char b = markup[bi];
 
-                if (b == '<') {
+                if (b == '<') 
+                {
                     int close = markup.index_of (">", bi);
                     if (close < 0) break;
                     string tag_str = markup.substring (bi + 1, close - bi - 1);
                     bi = close + 1;
 
-                    if (tag_str.has_prefix ("img ")) {
+                    if (tag_str.has_prefix ("img ")) 
+                    {
                         // Self-closing image tag: <img src="..."/>
                         string? src = parse_img_src (tag_str);
-                        if (src != null) {
+                        if (src != null) 
+                        {
                             Gtk.TextIter end_it;
                             buffer.get_end_iter (out end_it);
                             var anchor = buffer.create_child_anchor (end_it);
                             anchor_images.set (anchor, src);
                             text_view.add_child_at_anchor (make_image_widget (src), anchor);
                         }
-                    } else if (tag_str == "b" || tag_str == "i" ||
-                               tag_str == "u" || tag_str == "code") {
+                    } 
+                    else if (tag_str == "b" || tag_str == "i" || tag_str == "u" || tag_str == "code") 
+                    {
                         Gtk.TextIter end_it;
                         buffer.get_end_iter (out end_it);
                         string name = tag_str == "b" ? "bold" : tag_str == "i" ? "italic" :
                                       tag_str == "u" ? "underline" : "code";
                         s_names.add (name);
                         s_starts.add (end_it.get_offset ());
-                    } else if (s_names.length > 0) {
+                    } 
+                    else if (s_names.length > 0) 
+                    {
                         Gtk.TextIter end_it;
                         buffer.get_end_iter (out end_it);
                         int last = (int) s_names.length - 1;
@@ -695,26 +764,38 @@ namespace NoteMe {
                         s_starts.remove_index (last);
                     }
 
-                } else {
+                } 
+                else 
+                {
                     // Collect a plain-text chunk up to the next tag
                     var chunk = new StringBuilder ();
-                    while (bi < markup.length && markup[bi] != '<') {
-                        if (markup[bi] == '&') {
+                    while (bi < markup.length && markup[bi] != '<') 
+                    {
+                        if (markup[bi] == '&') 
+                        {
                             int semi = markup.index_of (";", bi);
-                            if (semi >= 0) {
+                            if (semi >= 0) 
+                            {
                                 string entity = markup.substring (bi + 1, semi - bi - 1);
                                 if      (entity == "lt")  chunk.append_c ('<');
                                 else if (entity == "gt")  chunk.append_c ('>');
                                 else if (entity == "amp") chunk.append_c ('&');
                                 bi = semi + 1;
-                            } else { chunk.append_c ('&'); bi++; }
-                        } else {
+                            } 
+                            else 
+                            { 
+                                chunk.append_c ('&'); bi++; 
+                            }
+                        }
+                        else 
+                        {
                             unichar c = markup.get_char (bi);
                             chunk.append_unichar (c);
                             bi += (int) c.to_utf8 (null);
                         }
                     }
-                    if (chunk.len > 0) {
+                    if (chunk.len > 0) 
+                    {
                         Gtk.TextIter end_it;
                         buffer.get_end_iter (out end_it);
                         buffer.insert (ref end_it, chunk.str, -1);
@@ -723,7 +804,8 @@ namespace NoteMe {
             }
 
             // Apply all collected tag ranges
-            for (int k = 0; k < t_names.length; k++) {
+            for (int k = 0; k < t_names.length; k++) 
+            {
                 Gtk.TextIter s, e;
                 buffer.get_iter_at_offset (out s, t_starts[k]);
                 buffer.get_iter_at_offset (out e, t_ends[k]);
@@ -732,7 +814,8 @@ namespace NoteMe {
             }
         }
 
-        private string? parse_img_src (string tag_str) {
+        private string? parse_img_src (string tag_str) 
+        {
             int start = tag_str.index_of ("src=\"");
             if (start < 0) return null;
             start += 5;
@@ -745,14 +828,16 @@ namespace NoteMe {
                           .replace ("&quot;", "\"");
         }
 
-        private Gtk.Widget make_image_widget (string path) {
+        private Gtk.Widget make_image_widget (string path) 
+        {
             var picture = new Gtk.Picture.for_filename (path);
-            picture.content_fit    = Gtk.ContentFit.SCALE_DOWN;
-            picture.width_request  = 320;
+            picture.content_fit = Gtk.ContentFit.SCALE_DOWN;
+            // TODO: include in preferences the size of the images in the editor
+            picture.width_request = 320;
             picture.height_request = 240;
-            picture.margin_top     = 4;
+            picture.margin_top = 4;
             picture.margin_bottom  = 4;
-            picture.halign         = Gtk.Align.START;
+            picture.halign = Gtk.Align.START;
             return picture;
         }
     }
