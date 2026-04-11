@@ -7,6 +7,7 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.Label       preview_label;
         [GtkChild] unowned Gtk.DrawingArea color_strip;
         [GtkChild] unowned Gtk.Button      pin_button;
+        [GtkChild] unowned Gtk.Image       lock_icon;
 
         public Note note { get; construct; }
 
@@ -41,9 +42,15 @@ namespace NoteMe {
         }
 
         private void update_labels () {
-            title_label.label   = note.title.length > 0 ? note.title : "Untitled";
-            var preview         = strip_markup (note.body).replace ("\n", " ");
-            preview_label.label = preview.length > 60 ? preview.substring (0, 60) + "…" : preview;
+            title_label.label = note.title.length > 0 ? note.title : "Untitled";
+            bool encrypted    = note.body.has_prefix ("ENCRYPTED:");
+            lock_icon.visible = encrypted;
+            if (encrypted) {
+                preview_label.label = _("Encrypted note");
+            } else {
+                var preview         = strip_markup (note.body).replace ("\n", " ");
+                preview_label.label = preview.length > 60 ? preview.substring (0, 60) + "…" : preview;
+            }
         }
 
         private string strip_markup (string markup) {

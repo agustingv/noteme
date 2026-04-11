@@ -11,6 +11,7 @@ namespace NoteMe
         [GtkChild] unowned Gtk.ToggleButton  code_button;
         [GtkChild] unowned Gtk.ToggleButton  list_button;
         [GtkChild] unowned Gtk.TextView      text_view;
+        [GtkChild] unowned Gtk.Stack         editor_stack;
         [GtkChild] unowned Gtk.Paned         preview_pane;
         [GtkChild] unowned Gtk.Label         position_label;
         [GtkChild] unowned Gtk.Box           extension_box;
@@ -328,6 +329,24 @@ namespace NoteMe
                 buffer.apply_tag (tag, start, end);
             else
                 buffer.remove_tag (tag, start, end);
+        }
+
+        public void set_editable (bool editable)
+        {
+            text_view.editable = editable;
+        }
+
+        public void set_locked (bool locked)
+        {
+            editor_stack.visible_child_name = locked ? "locked" : "editor";
+        }
+
+        // Set markup and fire the changed signal (used by extensions that modify note body)
+        public void set_markup_silent (string markup)
+        {
+            updating = true;
+            parse_markup (markup);
+            updating = false;
         }
 
         public void set_preview_widget (Gtk.Widget? widget)

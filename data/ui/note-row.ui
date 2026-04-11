@@ -43,6 +43,18 @@
       </object>
     </child>
 
+    <!-- Encrypted indicator -->
+    <child>
+      <object class="GtkImage" id="lock_icon">
+        <property name="icon-name">system-lock-screen-symbolic</property>
+        <property name="pixel-size">14</property>
+        <property name="valign">center</property>
+        <property name="margin-end">4</property>
+        <property name="visible">false</property>
+        <style><class name="dim-label"/></style>
+      </object>
+    </child>
+
     <!-- Pin button -->
     <child>
       <object class="GtkButton" id="pin_button">

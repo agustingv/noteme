@@ -13,6 +13,10 @@
         <attribute name="label" translatable="yes">Extensions</attribute>
         <attribute name="action">app.extensions</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Backups</attribute>
+        <attribute name="action">app.backups</attribute>
+      </item>
     </section>
     <section>
       <item>
@@ -28,7 +32,9 @@
     <property name="default-height">600</property>
 
     <child>
-      <object class="AdwToolbarView">
+      <object class="AdwToastOverlay" id="toast_overlay">
+        <property name="child">
+          <object class="AdwToolbarView">
 
         <child type="top">
           <object class="AdwHeaderBar">
@@ -201,6 +207,8 @@
           </object>
         </property>
 
+      </object>
+        </property>
       </object>
     </child>
 

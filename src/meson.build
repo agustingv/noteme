@@ -28,6 +28,7 @@ sources = files(
   'extensions/word_count_extension.vala',
   'extensions/note_info_extension.vala',
   'extensions/image_extension.vala',
+  'extensions/crypt_extension.vala',
   'dialogs/preferences_dialog.vala',
   'dialogs/extensions_dialog.vala',
   'dialogs/backup_dialog.vala'

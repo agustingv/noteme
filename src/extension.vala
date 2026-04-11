@@ -24,6 +24,7 @@ namespace NoteMe
         internal weak RichEditor? editor;
 
         public signal void toast_requested (string message);
+        public signal void save_note_requested ();
 
         // Emitted when the selected note changes (null = no selection)
         public signal void note_selected (Note? note);
@@ -76,6 +77,12 @@ namespace NoteMe
             toast_requested (message);
         }
 
+        // Persist the current note to disk (use after modifying note.body directly)
+        public void save_current_note ()
+        {
+            save_note_requested ();
+        }
+
         // Add/remove an event controller on the editor's text view
         public void add_text_view_controller (Gtk.EventController controller)
         {
@@ -110,6 +117,30 @@ namespace NoteMe
         public void center_preview_pane ()
         {
             editor?.center_preview_pane ();
+        }
+
+        // Show the "locked" placeholder instead of the editor text view
+        public void set_editor_locked (bool locked)
+        {
+            editor?.set_locked (locked);
+        }
+
+        // Allow/disallow editing in the text view
+        public void set_editor_editable (bool editable)
+        {
+            editor?.set_editable (editable);
+        }
+
+        // Replace editor content without firing the note-save path
+        public void set_editor_markup_silent (string markup)
+        {
+            editor?.set_markup_silent (markup);
+        }
+
+        // Get raw markup from editor
+        public string get_note_markup ()
+        {
+            return editor?.get_markup () ?? "";
         }
     }
 

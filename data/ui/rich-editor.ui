@@ -114,33 +114,83 @@
       <object class="GtkSeparator"/>
     </child>
 
-    <!-- Editor + Preview pane -->
+    <!-- Editor stack: normal editing view or locked placeholder -->
     <child>
-      <object class="GtkPaned" id="preview_pane">
-        <property name="orientation">horizontal</property>
+      <object class="GtkStack" id="editor_stack">
         <property name="vexpand">true</property>
-        <property name="shrink-start-child">false</property>
-        <property name="shrink-end-child">true</property>
-        <property name="resize-start-child">true</property>
-        <property name="resize-end-child">true</property>
+        <property name="transition-type">crossfade</property>
 
-        <property name="start-child">
-          <object class="GtkScrolledWindow">
-            <property name="hscrollbar-policy">never</property>
-            <child>
-              <object class="GtkTextView" id="text_view">
-                <property name="wrap-mode">word-char</property>
-                <property name="pixels-above-lines">4</property>
-                <property name="pixels-below-lines">4</property>
-                <property name="left-margin">16</property>
-                <property name="right-margin">16</property>
-                <property name="top-margin">12</property>
-                <property name="bottom-margin">12</property>
+        <!-- Normal editing page -->
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">editor</property>
+            <property name="child">
+              <object class="GtkPaned" id="preview_pane">
+                <property name="orientation">horizontal</property>
+                <property name="shrink-start-child">false</property>
+                <property name="shrink-end-child">true</property>
+                <property name="resize-start-child">true</property>
+                <property name="resize-end-child">true</property>
+
+                <property name="start-child">
+                  <object class="GtkScrolledWindow">
+                    <property name="hscrollbar-policy">never</property>
+                    <child>
+                      <object class="GtkTextView" id="text_view">
+                        <property name="wrap-mode">word-char</property>
+                        <property name="pixels-above-lines">4</property>
+                        <property name="pixels-below-lines">4</property>
+                        <property name="left-margin">16</property>
+                        <property name="right-margin">16</property>
+                        <property name="top-margin">12</property>
+                        <property name="bottom-margin">12</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+
               </object>
-            </child>
+            </property>
           </object>
-        </property>
+        </child>
 
+        <!-- Locked page -->
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">locked</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="spacing">12</property>
+
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">system-lock-screen-symbolic</property>
+                    <property name="pixel-size">64</property>
+                    <style><class name="dim-label"/></style>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">This note is encrypted</property>
+                    <style><class name="title-2"/></style>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Click the lock icon in the toolbar to enter your password</property>
+                    <style><class name="dim-label"/></style>
+                  </object>
+                </child>
+
+              </object>
+            </property>
+          </object>
+        </child>
 
       </object>
     </child>

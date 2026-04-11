@@ -74,6 +74,9 @@ namespace NoteMe {
             host.toast_requested.connect ((msg) => {
                 toast_overlay.add_toast (new Adw.Toast (msg));
             });
+            host.save_note_requested.connect (() => {
+                if (current_note != null) store.save (current_note);
+            });
             ext_manager.activate_all (host);
 
             var first = notes_list.get_row_at_index (0);
