@@ -58,14 +58,33 @@ namespace NoteMe
         }
 
         // Add a widget to the editor footer (left of the cursor-position label)
-        public void add_footer_widget (Gtk.Widget widget) 
+        public void add_footer_widget (Gtk.Widget widget)
         {
             editor?.add_footer_extension_widget (widget);
         }
 
-        public void remove_footer_widget (Gtk.Widget widget) 
+        public void remove_footer_widget (Gtk.Widget widget)
         {
             editor?.remove_footer_extension_widget (widget);
+        }
+
+        // Get the current note body converted to markdown
+        public string get_note_markdown ()
+        {
+            if (editor == null) return "";
+            return editor.markup_to_markdown (editor.get_markup ());
+        }
+
+        // Set or clear the preview panel (right side of the editor pane)
+        public void set_preview_widget (Gtk.Widget? widget)
+        {
+            editor?.set_preview_widget (widget);
+        }
+
+        // Split the preview pane at the center
+        public void center_preview_pane ()
+        {
+            editor?.center_preview_pane ();
         }
     }
 

@@ -19,6 +19,7 @@ namespace NoteMe
         {
             prefs = new Preferences ();
             ext_manager = new ExtensionManager ();
+            ext_manager.register (new MarkdownPreviewExtension ());
             ext_manager.register (new WordCountExtension ());
             ext_manager.register (new NoteInfoExtension ());
             ext_manager.register (new ImageExtension ());

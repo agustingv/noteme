@@ -24,6 +24,7 @@ sources = files(
   'rich_editor.vala',
   'main_window.vala',
   'extension.vala',
+  'extensions/markdown_preview_extension.vala',
   'extensions/word_count_extension.vala',
   'extensions/note_info_extension.vala',
   'extensions/image_extension.vala',
