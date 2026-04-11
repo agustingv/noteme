@@ -7,10 +7,12 @@ namespace NoteMe {
 
         public string? editor_font_desc    { get; set; }
         public int     image_display_width { get; set; default = 320; }
+        public string  backup_folder       { get; set; default = ""; }
 
         public Preferences () {
             editor_font_desc    = "Sans 12";
             image_display_width = 320;
+            backup_folder       = "";
             var config_dir = Path.build_filename (
                 Environment.get_user_config_dir (), "noteme"
             );
@@ -25,12 +27,14 @@ namespace NoteMe {
                 keyfile.load_from_file (config_path, KeyFileFlags.NONE);
                 editor_font_desc    = keyfile.get_string  ("Editor", "font-desc");
                 image_display_width = keyfile.get_integer ("Images", "display-width");
+                backup_folder       = keyfile.get_string  ("Backup", "folder");
             } catch { /* use defaults */ }
         }
 
         public void save () {
             keyfile.set_string  ("Editor", "font-desc",      editor_font_desc ?? "Sans 12");
             keyfile.set_integer ("Images", "display-width",  image_display_width);
+            keyfile.set_string  ("Backup", "folder",         backup_folder);
             try {
                 keyfile.save_to_file (config_path);
             } catch (Error e) {

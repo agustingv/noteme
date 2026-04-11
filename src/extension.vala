@@ -17,11 +17,13 @@ namespace NoteMe
     }
 
     // Extension API provided to extensions for interacting with the main app
-    public class ExtensionHost : Object 
+    public class ExtensionHost : Object
     {
 
         public Note? current_note { get; internal set; }
         internal weak RichEditor? editor;
+
+        public signal void toast_requested (string message);
 
         // Emitted when the selected note changes (null = no selection)
         public signal void note_selected (Note? note);
@@ -66,6 +68,12 @@ namespace NoteMe
         public void remove_footer_widget (Gtk.Widget widget)
         {
             editor?.remove_footer_extension_widget (widget);
+        }
+
+        // Show a brief notification in the main window
+        public void show_toast (string message)
+        {
+            toast_requested (message);
         }
 
         // Add/remove an event controller on the editor's text view

@@ -29,7 +29,8 @@ sources = files(
   'extensions/note_info_extension.vala',
   'extensions/image_extension.vala',
   'dialogs/preferences_dialog.vala',
-  'dialogs/extensions_dialog.vala'
+  'dialogs/extensions_dialog.vala',
+  'dialogs/backup_dialog.vala'
 ) + [config_vala]
 
 dependencies = [

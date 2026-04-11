@@ -40,6 +40,10 @@ namespace NoteMe
             ext_action.activate.connect (show_extensions);
             add_action (ext_action);
 
+            var backup_action = new SimpleAction ("backups", null);
+            backup_action.activate.connect (show_backups);
+            add_action (backup_action);
+
             set_accels_for_action ("app.preferences", { "<Ctrl>comma" });
         }
 
@@ -68,9 +72,15 @@ namespace NoteMe
             dialog.present (active_window);
         }
 
-        private void show_extensions () 
+        private void show_extensions ()
         {
             var dialog = new ExtensionsDialog (ext_manager);
+            dialog.present (active_window);
+        }
+
+        private void show_backups ()
+        {
+            var dialog = new BackupDialog (prefs);
             dialog.present (active_window);
         }
 

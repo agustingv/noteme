@@ -3,6 +3,7 @@ namespace NoteMe {
     [GtkTemplate (ui = "/io/github/agustingv/noteme/ui/main-window.ui")]
     public class MainWindow : Adw.ApplicationWindow {
 
+        [GtkChild] unowned Adw.ToastOverlay toast_overlay;
         [GtkChild] unowned Gtk.ListBox      notes_list;
         [GtkChild] unowned RichEditor       rich_editor;
         [GtkChild] unowned Gtk.Entry        title_entry;
@@ -69,6 +70,9 @@ namespace NoteMe {
             host.editor = rich_editor;
             rich_editor.changed.connect (() => {
                 if (!updating) host.note_content_changed ();
+            });
+            host.toast_requested.connect ((msg) => {
+                toast_overlay.add_toast (new Adw.Toast (msg));
             });
             ext_manager.activate_all (host);
 
