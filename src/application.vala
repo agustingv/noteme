@@ -52,15 +52,18 @@ namespace NoteMe
             win.present ();
         }
 
-        private void show_preferences () 
+        private void show_preferences ()
         {
             var dialog = new PreferencesDialog (prefs);
             dialog.font_changed.connect ((desc) => {
-                foreach (var window in get_windows ()) 
-                {
+                foreach (var window in get_windows ())
                     if (window is MainWindow)
                         ((MainWindow) window).apply_font_settings ();
-                }
+            });
+            dialog.image_size_changed.connect (() => {
+                foreach (var window in get_windows ())
+                    if (window is MainWindow)
+                        ((MainWindow) window).apply_image_settings ();
             });
             dialog.present (active_window);
         }

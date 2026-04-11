@@ -23,6 +23,8 @@ namespace NoteMe
         private Gtk.CssProvider font_provider;
         private bool            updating = false;
 
+        public int image_display_width { get; set; default = 320; }
+
         // Maps each in-buffer child anchor to its image source path
         private HashTable<Gtk.TextChildAnchor, string> anchor_images =
             new HashTable<Gtk.TextChildAnchor, string> (direct_hash, direct_equal);
@@ -339,6 +341,26 @@ namespace NoteMe
             preview_pane.set_position (w > 0 ? w / 2 : 400);
         }
 
+        public void add_text_view_controller (Gtk.EventController controller)
+        {
+            text_view.add_controller (controller);
+        }
+
+        public void remove_text_view_controller (Gtk.EventController controller)
+        {
+            text_view.remove_controller (controller);
+        }
+
+        // Move the cursor to the given widget-relative coordinates (used for drop positioning)
+        public void place_cursor_at_coords (double x, double y)
+        {
+            int bx, by;
+            text_view.window_to_buffer_coords (Gtk.TextWindowType.WIDGET, (int) x, (int) y, out bx, out by);
+            Gtk.TextIter iter;
+            text_view.get_iter_at_location (out iter, bx, by);
+            text_view.buffer.place_cursor (iter);
+        }
+
         public void add_extension_widget (Gtk.Widget widget)
         {
             extension_box.append (widget);
@@ -606,16 +628,15 @@ namespace NoteMe
                           .replace ("&quot;", "\"");
         }
 
-        private Gtk.Widget make_image_widget (string path) 
+        private Gtk.Widget make_image_widget (string path)
         {
             var picture = new Gtk.Picture.for_filename (path);
-            picture.content_fit = Gtk.ContentFit.SCALE_DOWN;
-            // TODO: include in preferences the size of the images in the editor
-            picture.width_request = 320;
-            picture.height_request = 240;
-            picture.margin_top = 4;
+            picture.content_fit    = Gtk.ContentFit.SCALE_DOWN;
+            picture.width_request  = image_display_width;
+            picture.height_request = image_display_width * 3 / 4;
+            picture.margin_top     = 4;
             picture.margin_bottom  = 4;
-            picture.halign = Gtk.Align.START;
+            picture.halign         = Gtk.Align.START;
             return picture;
         }
     }

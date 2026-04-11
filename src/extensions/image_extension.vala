@@ -3,22 +3,37 @@ namespace NoteMe {
     public class ImageExtension : Object, IExtension {
         public string id          { get { return "insert-image"; } }
         public string name        { get { return _("Insert Image"); } }
-        public string description { get { return _("Adds a toolbar button for inserting images into notes."); } }
+        public string description { get { return _("Adds a toolbar button for inserting images into notes. Supports drag and drop."); } }
 
-        private Gtk.Button     btn;
-        private ExtensionHost? host;
+        private Gtk.Button      btn;
+        private ExtensionHost?  host;
+        private Gtk.DropTarget? drop_target;
 
         public void activate (ExtensionHost h) {
             host = h;
             btn  = h.add_toolbar_button ("image-x-generic-symbolic", _("Insert Image"));
             btn.sensitive = false;
             btn.clicked.connect (on_insert_clicked);
-            h.note_selected.connect ((note) => btn.sensitive = note != null);
+            h.note_selected.connect (on_note_selected);
+
+            drop_target = new Gtk.DropTarget (typeof (Gdk.FileList), Gdk.DragAction.COPY);
+            drop_target.drop.connect (on_drop);
+            h.add_text_view_controller (drop_target);
         }
 
         public void deactivate () {
-            host?.remove_toolbar_widget (btn);
-            host = null;
+            if (host != null) {
+                host.note_selected.disconnect (on_note_selected);
+                host.remove_toolbar_widget (btn);
+                if (drop_target != null)
+                    host.remove_text_view_controller (drop_target);
+                host = null;
+            }
+            drop_target = null;
+        }
+
+        private void on_note_selected (Note? note) {
+            btn.sensitive = note != null;
         }
 
         private void on_insert_clicked () {
@@ -46,6 +61,36 @@ namespace NoteMe {
                     host?.insert_image (dest_path ?? file.get_path ());
                 } catch { /* user cancelled */ }
             });
+        }
+
+        private bool on_drop (GLib.Value val, double x, double y) {
+            if (host == null) return false;
+            if (!val.holds (typeof (Gdk.FileList))) return false;
+            var file_list = (Gdk.FileList) val;
+            if (file_list == null) return false;
+
+            bool inserted = false;
+            foreach (var file in file_list.get_files ()) {
+                if (!is_image_file (file)) continue;
+                host.place_cursor_at_coords (x, y);
+                var dest_path = copy_to_images_dir (file);
+                host.insert_image (dest_path ?? file.get_path ());
+                inserted = true;
+            }
+            return inserted;
+        }
+
+        private bool is_image_file (GLib.File file) {
+            try {
+                var info = file.query_info (
+                    GLib.FileAttribute.STANDARD_CONTENT_TYPE,
+                    GLib.FileQueryInfoFlags.NONE
+                );
+                string? mime = info.get_content_type ();
+                return mime != null && mime.has_prefix ("image/");
+            } catch {
+                return false;
+            }
         }
 
         // Copy the chosen file into ~/.local/share/noteme/images/ and return

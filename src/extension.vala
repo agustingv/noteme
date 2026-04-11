@@ -68,6 +68,23 @@ namespace NoteMe
             editor?.remove_footer_extension_widget (widget);
         }
 
+        // Add/remove an event controller on the editor's text view
+        public void add_text_view_controller (Gtk.EventController controller)
+        {
+            editor?.add_text_view_controller (controller);
+        }
+
+        public void remove_text_view_controller (Gtk.EventController controller)
+        {
+            editor?.remove_text_view_controller (controller);
+        }
+
+        // Position the cursor at widget-relative coordinates (useful for drop targets)
+        public void place_cursor_at_coords (double x, double y)
+        {
+            editor?.place_cursor_at_coords (x, y);
+        }
+
         // Get the current note body converted to markdown
         public string get_note_markdown ()
         {

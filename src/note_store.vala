@@ -39,13 +39,14 @@ namespace NoteMe {
 
             notes.sort ((a, b) => {
                 if (a.pinned != b.pinned) return a.pinned ? -1 : 1;
-                return strcmp (b.created_at, a.created_at);
+                return strcmp (b.updated_at, a.updated_at);
             });
             foreach (var note in notes)
                 _store.append (note);
         }
 
         public void save (Note note) {
+            note.updated_at = new DateTime.now_local ().format ("%Y-%m-%dT%H:%M:%S");
             try {
                 FileUtils.set_contents (note_path (note), note.to_string ());
             } catch (Error e) {

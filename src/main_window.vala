@@ -11,10 +11,13 @@ namespace NoteMe {
         [GtkChild] unowned Gtk.MenuButton   color_button;
         [GtkChild] unowned Gtk.SearchEntry  search_entry;
 
-        private NoteStore     store;
-        private Note?         current_note = null;
-        private bool          updating     = false;
-        private ExtensionHost host;
+        private NoteStore           store;
+        private Note?               current_note = null;
+        private bool                updating     = false;
+        private bool                resorting    = false;
+        private ExtensionHost       host;
+        private Gtk.CustomSorter    sorter;
+        private Gtk.SortListModel   sort_model;
 
         public Preferences       prefs       { get; construct; }
         public ExtensionManager  ext_manager { get; construct; }
@@ -33,13 +36,13 @@ namespace NoteMe {
             });
             var filter_model = new Gtk.FilterListModel (store.store, custom_filter);
 
-            var sorter = new Gtk.CustomSorter ((a, b) => {
+            sorter = new Gtk.CustomSorter ((a, b) => {
                 var na = (Note) a;
                 var nb = (Note) b;
                 if (na.pinned != nb.pinned) return na.pinned ? -1 : 1;
-                return strcmp (nb.created_at, na.created_at);
+                return strcmp (nb.updated_at, na.updated_at);
             });
-            var sort_model = new Gtk.SortListModel (filter_model, sorter);
+            sort_model = new Gtk.SortListModel (filter_model, sorter);
 
             notes_list.bind_model (sort_model, (obj) => {
                 var note_row = new NoteRow ((Note) obj);
@@ -60,6 +63,7 @@ namespace NoteMe {
             setup_color_picker ();
             update_empty_state ();
             apply_font_settings ();
+            rich_editor.image_display_width = prefs.image_display_width;
 
             host        = new ExtensionHost ();
             host.editor = rich_editor;
@@ -74,6 +78,16 @@ namespace NoteMe {
 
         public void apply_font_settings () {
             rich_editor.set_font_desc (prefs.editor_font_desc ?? "Sans 12");
+        }
+
+        public void apply_image_settings () {
+            rich_editor.image_display_width = prefs.image_display_width;
+            // Reload the current note so existing embedded images resize immediately
+            if (current_note != null) {
+                updating = true;
+                rich_editor.set_markup (current_note.body);
+                updating = false;
+            }
         }
 
 
@@ -143,10 +157,13 @@ namespace NoteMe {
 
         [GtkCallback]
         private void on_new_note_clicked () {
-            store.create_note ();
-            // New note is inserted at position 0 (newest first)
-            var row = notes_list.get_row_at_index (0);
-            if (row != null) notes_list.select_row (row);
+            var note = store.create_note ();
+            for (uint i = 0; i < sort_model.get_n_items (); i++) {
+                if (sort_model.get_item (i) == note) {
+                    notes_list.select_row (notes_list.get_row_at_index ((int) i));
+                    break;
+                }
+            }
             title_entry.grab_focus ();
         }
 
@@ -185,6 +202,7 @@ namespace NoteMe {
         }
 
         private void on_row_selected (Gtk.ListBoxRow? row) {
+            if (resorting) return;
             if (row == null) {
                 current_note     = null;
                 host.current_note = null;
@@ -192,7 +210,9 @@ namespace NoteMe {
                 update_empty_state ();
                 return;
             }
-            current_note      = ((NoteRow) row.child).note;
+            var note = ((NoteRow) row.child).note;
+            if (note == current_note) return;
+            current_note      = note;
             host.current_note  = current_note;
             host.note_selected (current_note);
             load_note (current_note);
@@ -212,12 +232,27 @@ namespace NoteMe {
             if (updating || current_note == null) return;
             current_note.title = title_entry.text;
             store.save (current_note);
+            resort_and_reselect ();
         }
 
         private void on_body_changed () {
             if (updating || current_note == null) return;
             current_note.body = rich_editor.get_markup ();
             store.save (current_note);
+            resort_and_reselect ();
+        }
+
+        private void resort_and_reselect () {
+            var note   = current_note;
+            resorting  = true;
+            sorter.changed (Gtk.SorterChange.DIFFERENT);
+            resorting  = false;
+            for (uint i = 0; i < sort_model.get_n_items (); i++) {
+                if (sort_model.get_item (i) == note) {
+                    notes_list.select_row (notes_list.get_row_at_index ((int) i));
+                    return;
+                }
+            }
         }
 
         private void update_empty_state () {
