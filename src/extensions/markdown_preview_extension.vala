@@ -53,7 +53,7 @@ namespace NoteMe
                     return true;
                 })
             ));
-            scroll.add_controller (ctrl);
+            h.editor.add_controller (ctrl);
 
             button = new Gtk.ToggleButton ();
             button.label        = "MD";
