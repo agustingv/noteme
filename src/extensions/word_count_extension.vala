@@ -15,26 +15,26 @@ namespace NoteMe {
             label.add_css_class ("caption");
             label.margin_start = 4;
             label.margin_end   = 4;
-            h.add_footer_widget (label);
+            h.addFooterWidget (label);
             h.note_selected.connect        (() => update ());
             h.note_content_changed.connect (() => update ());
             update ();
         }
 
         public void deactivate () {
-            host?.remove_footer_widget (label);
+            host?.removeFooterWidget (label);
             host = null;
         }
 
         private void update () {
             if (host?.current_note == null) { label.label = ""; return; }
-            string text  = strip_markup (host.current_note.body);
-            int    words = count_words (text);
+            string text  = stripMarkup (host.current_note.body);
+            int    words = countWords (text);
             int    chars = text.char_count ();
             label.label  = _("%d words · %d chars").printf (words, chars);
         }
 
-        private int count_words (string text) {
+        private int countWords (string text) {
             int  count   = 0;
             bool in_word = false;
             for (int i = 0; i < text.length; ) {
@@ -50,7 +50,7 @@ namespace NoteMe {
             return count;
         }
 
-        private string strip_markup (string markup) {
+        private string stripMarkup (string markup) {
             var sb = new StringBuilder ();
             int i  = 0;
             while (i < markup.length) {

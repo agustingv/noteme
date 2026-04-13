@@ -27,7 +27,7 @@
                   <object class="GtkToggleButton" id="bold_button">
                     <property name="label">B</property>
                     <property name="tooltip-text" translatable="yes">Bold (Ctrl+B)</property>
-                    <signal name="toggled" handler="on_bold_toggled"/>
+                    <signal name="toggled" handler="onBoldToggled"/>
                     <style><class name="flat"/></style>
                   </object>
                 </child>
@@ -36,7 +36,7 @@
                   <object class="GtkToggleButton" id="italic_button">
                     <property name="label">I</property>
                     <property name="tooltip-text" translatable="yes">Italic (Ctrl+I)</property>
-                    <signal name="toggled" handler="on_italic_toggled"/>
+                    <signal name="toggled" handler="onItalicToggled"/>
                     <style><class name="flat"/></style>
                   </object>
                 </child>
@@ -45,7 +45,7 @@
                   <object class="GtkToggleButton" id="underline_button">
                     <property name="label">U</property>
                     <property name="tooltip-text" translatable="yes">Underline (Ctrl+U)</property>
-                    <signal name="toggled" handler="on_underline_toggled"/>
+                    <signal name="toggled" handler="onUnderlineToggled"/>
                     <style><class name="flat"/></style>
                   </object>
                 </child>
@@ -62,7 +62,7 @@
                   <object class="GtkToggleButton" id="code_button">
                     <property name="label">&lt;/&gt;</property>
                     <property name="tooltip-text" translatable="yes">Inline Code (Ctrl+`)</property>
-                    <signal name="toggled" handler="on_code_toggled"/>
+                    <signal name="toggled" handler="onCodeToggled"/>
                     <style><class name="flat"/></style>
                   </object>
                 </child>
@@ -71,7 +71,7 @@
                   <object class="GtkToggleButton" id="list_button">
                     <property name="label">•≡</property>
                     <property name="tooltip-text" translatable="yes">Bullet List (Ctrl+Shift+L)</property>
-                    <signal name="toggled" handler="on_list_toggled"/>
+                    <signal name="toggled" handler="onListToggled"/>
                     <style><class name="flat"/></style>
                   </object>
                 </child>
@@ -102,7 +102,7 @@
           <object class="GtkButton" id="export_button">
             <property name="icon-name">document-save-as-symbolic</property>
             <property name="tooltip-text" translatable="yes">Export to file</property>
-            <signal name="clicked" handler="on_export_clicked"/>
+            <signal name="clicked" handler="onExportClicked"/>
             <style><class name="flat"/></style>
           </object>
         </child>

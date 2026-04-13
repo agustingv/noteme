@@ -83,7 +83,7 @@
                         <property name="icon-name">list-add-symbolic</property>
                         <property name="tooltip-text" translatable="yes">New Note</property>
                         <property name="hexpand">true</property>
-                        <signal name="clicked" handler="on_new_note_clicked"/>
+                        <signal name="clicked" handler="onNewNoteClicked"/>
                       </object>
                     </child>
 
@@ -93,7 +93,7 @@
                         <property name="tooltip-text" translatable="yes">Delete Note</property>
                         <property name="sensitive">false</property>
                         <property name="hexpand">true</property>
-                        <signal name="clicked" handler="on_delete_clicked"/>
+                        <signal name="clicked" handler="onDeleteClicked"/>
                       </object>
                     </child>
 

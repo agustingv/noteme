@@ -10,25 +10,25 @@ namespace NoteMe {
 
         public void activate (ExtensionHost h) {
             host = h;
-            btn  = h.add_toolbar_button ("dialog-information-symbolic", _("Note Information"));
+            btn  = h.addToolbarButton ("dialog-information-symbolic", _("Note Information"));
             btn.sensitive = false;
-            btn.clicked.connect (show_info);
+            btn.clicked.connect (showInfo);
             h.note_selected.connect ((note) => btn.sensitive = note != null);
         }
 
         public void deactivate () {
-            host?.remove_toolbar_widget (btn);
+            host?.removeToolbarWidget (btn);
             host = null;
         }
 
-        private void show_info () {
+        private void showInfo () {
             var note = host?.current_note;
             if (note == null) return;
 
-            string plain         = strip_markup (note.body);
-            int    words         = count_words (plain);
+            string plain         = stripMarkup (note.body);
+            int    words         = countWords (plain);
             int    chars_total   = plain.char_count ();
-            int    chars_no_sp   = count_chars_no_spaces (plain);
+            int    chars_no_sp   = countCharsNoSpaces (plain);
             int    lines         = plain == "" ? 0 : plain.split ("\n").length;
             int    read_min      = (int) Math.ceil (words / 200.0);
 
@@ -54,21 +54,21 @@ namespace NoteMe {
             general.title = _("General");
             page.add (general);
 
-            add_row (general, _("Title"),   note.title.length > 0 ? note.title : _("Untitled"));
-            add_row (general, _("Created"), format_date (note.created_at));
-            add_row (general, _("Color"),   note.color.length > 0 ? note.color : _("None"));
-            add_row (general, _("Pinned"),  note.pinned ? _("Yes") : _("No"));
+            addRow (general, _("Title"),   note.title.length > 0 ? note.title : _("Untitled"));
+            addRow (general, _("Created"), formatDate (note.created_at));
+            addRow (general, _("Color"),   note.color.length > 0 ? note.color : _("None"));
+            addRow (general, _("Pinned"),  note.pinned ? _("Yes") : _("No"));
 
             // ── Statistics ────────────────────────────────────────────────────
             var stats = new Adw.PreferencesGroup ();
             stats.title = _("Statistics");
             page.add (stats);
 
-            add_row (stats, _("Words"),                    words.to_string ());
-            add_row (stats, _("Characters"),               chars_total.to_string ());
-            add_row (stats, _("Characters (no spaces)"),   chars_no_sp.to_string ());
-            add_row (stats, _("Lines"),                    lines.to_string ());
-            add_row (stats, _("Estimated reading time"),
+            addRow (stats, _("Words"),                    words.to_string ());
+            addRow (stats, _("Characters"),               chars_total.to_string ());
+            addRow (stats, _("Characters (no spaces)"),   chars_no_sp.to_string ());
+            addRow (stats, _("Lines"),                    lines.to_string ());
+            addRow (stats, _("Estimated reading time"),
                      read_min <= 1 ? _("< 1 min") : _("%d min").printf (read_min));
 
             scroll.child = page;
@@ -77,7 +77,7 @@ namespace NoteMe {
             win.present ();
         }
 
-        private void add_row (Adw.PreferencesGroup group, string title, string value) {
+        private void addRow (Adw.PreferencesGroup group, string title, string value) {
             var row = new Adw.ActionRow ();
             row.title = title;
             var lbl = new Gtk.Label (value);
@@ -89,13 +89,13 @@ namespace NoteMe {
             group.add (row);
         }
 
-        private string format_date (string iso) {
+        private string formatDate (string iso) {
             // iso = "YYYY-MM-DDTHH:MM:SS"
             if (iso.length < 19) return iso;
             return "%s  %s".printf (iso.substring (0, 10), iso.substring (11, 8));
         }
 
-        private int count_words (string text) {
+        private int countWords (string text) {
             int  count   = 0;
             bool in_word = false;
             for (int i = 0; i < text.length; ) {
@@ -107,7 +107,7 @@ namespace NoteMe {
             return count;
         }
 
-        private int count_chars_no_spaces (string text) {
+        private int countCharsNoSpaces (string text) {
             int count = 0;
             for (int i = 0; i < text.length; ) {
                 unichar c = text.get_char (i);
@@ -117,7 +117,7 @@ namespace NoteMe {
             return count;
         }
 
-        private string strip_markup (string markup) {
+        private string stripMarkup (string markup) {
             var sb = new StringBuilder ();
             int i  = 0;
             while (i < markup.length) {

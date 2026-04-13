@@ -15,15 +15,15 @@ namespace NoteMe {
             group.description = _("External plugins can be placed in %s as .so files. See README.md in https://github.com/agustingv/noteme how to create your own.").printf (Path.build_filename (Environment.get_user_data_dir (), "noteme", "plugins"));
             page.add (group);
 
-            var extensions = manager.get_extensions ();
+            var extensions = manager.getExtensions ();
             for (int i = 0; i < extensions.length; i++) {
                 var ext = extensions[i];
                 var row = new Adw.SwitchRow ();
                 row.title    = ext.name;
                 row.subtitle = ext.description;
-                row.active   = manager.get_active (ext);
+                row.active   = manager.getActive (ext);
                 var captured = ext;
-                row.notify["active"].connect (() => manager.set_active (captured, row.active));
+                row.notify["active"].connect (() => manager.setActive (captured, row.active));
                 group.add (row);
             }
         }

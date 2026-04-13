@@ -11,32 +11,32 @@ namespace NoteMe {
 
         public void activate (ExtensionHost h) {
             host = h;
-            btn  = h.add_toolbar_button ("image-x-generic-symbolic", _("Insert Image"));
+            btn  = h.addToolbarButton ("image-x-generic-symbolic", _("Insert Image"));
             btn.sensitive = false;
-            btn.clicked.connect (on_insert_clicked);
-            h.note_selected.connect (on_note_selected);
+            btn.clicked.connect (onInsertClicked);
+            h.note_selected.connect (onNoteSelected);
 
             drop_target = new Gtk.DropTarget (typeof (Gdk.FileList), Gdk.DragAction.COPY);
-            drop_target.drop.connect (on_drop);
-            h.add_text_view_controller (drop_target);
+            drop_target.drop.connect (onDrop);
+            h.addTextViewController (drop_target);
         }
 
         public void deactivate () {
             if (host != null) {
-                host.note_selected.disconnect (on_note_selected);
-                host.remove_toolbar_widget (btn);
+                host.note_selected.disconnect (onNoteSelected);
+                host.removeToolbarWidget (btn);
                 if (drop_target != null)
-                    host.remove_text_view_controller (drop_target);
+                    host.removeTextViewController (drop_target);
                 host = null;
             }
             drop_target = null;
         }
 
-        private void on_note_selected (Note? note) {
+        private void onNoteSelected (Note? note) {
             btn.sensitive = note != null;
         }
 
-        private void on_insert_clicked () {
+        private void onInsertClicked () {
             var dialog = new Gtk.FileDialog ();
             dialog.title = _("Select Image");
 
@@ -57,13 +57,13 @@ namespace NoteMe {
             dialog.open.begin (parent, null, (obj, res) => {
                 try {
                     var file      = dialog.open.end (res);
-                    var dest_path = copy_to_images_dir (file);
-                    host?.insert_image (dest_path ?? file.get_path ());
+                    var dest_path = copyToImagesDir (file);
+                    host?.insertImage (dest_path ?? file.get_path ());
                 } catch { /* user cancelled */ }
             });
         }
 
-        private bool on_drop (GLib.Value val, double x, double y) {
+        private bool onDrop (GLib.Value val, double x, double y) {
             if (host == null) return false;
             if (!val.holds (typeof (Gdk.FileList))) return false;
             var file_list = (Gdk.FileList) val;
@@ -71,16 +71,16 @@ namespace NoteMe {
 
             bool inserted = false;
             foreach (var file in file_list.get_files ()) {
-                if (!is_image_file (file)) continue;
-                host.place_cursor_at_coords (x, y);
-                var dest_path = copy_to_images_dir (file);
-                host.insert_image (dest_path ?? file.get_path ());
+                if (!isImageFile (file)) continue;
+                host.placeCursorAtCoords (x, y);
+                var dest_path = copyToImagesDir (file);
+                host.insertImage (dest_path ?? file.get_path ());
                 inserted = true;
             }
             return inserted;
         }
 
-        private bool is_image_file (GLib.File file) {
+        private bool isImageFile (GLib.File file) {
             try {
                 var info = file.query_info (
                     GLib.FileAttribute.STANDARD_CONTENT_TYPE,
@@ -95,7 +95,7 @@ namespace NoteMe {
 
         // Copy the chosen file into ~/.local/share/noteme/images/ and return
         // the destination path. Returns null and logs a warning on I/O error.
-        private string? copy_to_images_dir (GLib.File src) {
+        private string? copyToImagesDir (GLib.File src) {
             var images_dir = Path.build_filename (
                 Environment.get_user_data_dir (), "noteme", "images"
             );

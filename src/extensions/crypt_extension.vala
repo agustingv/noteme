@@ -21,19 +21,19 @@ namespace NoteMe
             lock_btn.icon_name   = "system-lock-screen-symbolic";
             lock_btn.tooltip_text = _("Encrypt / Decrypt Note");
             lock_btn.add_css_class ("flat");
-            host.add_toolbar_widget (lock_btn);
+            host.addToolbarWidget (lock_btn);
 
-            lock_btn.toggled.connect (on_btn_toggled);
+            lock_btn.toggled.connect (onBtnToggled);
 
             note_selected_id = host.note_selected.connect ((note) => {
-                // load_note() runs after this signal, so defer state update
+                // loadNote() runs after this signal, so defer state update
                 GLib.Idle.add (() => {
-                    apply_lock_state ();
+                    applyLockState ();
                     return GLib.Source.REMOVE;
                 });
             });
 
-            apply_lock_state ();
+            applyLockState ();
         }
 
         public void deactivate ()
@@ -43,31 +43,31 @@ namespace NoteMe
                 note_selected_id = 0;
             }
             if (lock_btn != null) {
-                host?.remove_toolbar_widget (lock_btn);
+                host?.removeToolbarWidget (lock_btn);
                 lock_btn = null;
             }
-            host?.set_editor_locked (false);
-            host?.set_editor_editable (true);
+            host?.setEditorLocked (false);
+            host?.setEditorEditable (true);
             host = null;
         }
 
         // ── Helpers ──────────────────────────────────────────────────────────
 
-        private bool note_is_encrypted ()
+        private bool noteIsEncrypted ()
         {
             if (host == null || host.current_note == null) return false;
             return host.current_note.body.has_prefix (ENCRYPTED_PREFIX);
         }
 
-        private void apply_lock_state ()
+        private void applyLockState ()
         {
-            bool encrypted = note_is_encrypted ();
-            set_btn_active (encrypted);
-            host?.set_editor_locked (encrypted);
-            host?.set_editor_editable (!encrypted);
+            bool encrypted = noteIsEncrypted ();
+            setBtnActive (encrypted);
+            host?.setEditorLocked (encrypted);
+            host?.setEditorEditable (!encrypted);
         }
 
-        private void set_btn_active (bool active)
+        private void setBtnActive (bool active)
         {
             updating_btn = true;
             if (lock_btn != null) lock_btn.active = active;
@@ -76,25 +76,25 @@ namespace NoteMe
 
         // ── Button toggled ───────────────────────────────────────────────────
 
-        private void on_btn_toggled ()
+        private void onBtnToggled ()
         {
             if (updating_btn || host == null) return;
 
             if (lock_btn != null && lock_btn.active) {
                 // User wants to encrypt
-                ask_encrypt_password ();
+                askEncryptPassword ();
             } else {
                 // User wants to decrypt — button was active (encrypted), now off
-                ask_decrypt_password ();
+                askDecryptPassword ();
             }
         }
 
         // ── Encrypt flow ─────────────────────────────────────────────────────
 
-        private void ask_encrypt_password ()
+        private void askEncryptPassword ()
         {
             if (host == null || host.current_note == null) {
-                set_btn_active (false);
+                setBtnActive (false);
                 return;
             }
 
@@ -128,35 +128,35 @@ namespace NoteMe
 
             dialog.choose.begin (window, null, (obj, res) => {
                 if (dialog.choose.end (res) != "encrypt") {
-                    set_btn_active (false);
+                    setBtnActive (false);
                     return;
                 }
                 string pass    = pass_entry.text;
                 string confirm = confirm_entry.text;
                 if (pass.length == 0) {
-                    host?.show_toast (_("Password cannot be empty"));
-                    set_btn_active (false);
+                    host?.showToast (_("Password cannot be empty"));
+                    setBtnActive (false);
                     return;
                 }
                 if (pass != confirm) {
-                    host?.show_toast (_("Passwords do not match"));
-                    set_btn_active (false);
+                    host?.showToast (_("Passwords do not match"));
+                    setBtnActive (false);
                     return;
                 }
-                do_encrypt (pass);
+                doEncrypt (pass);
             });
         }
 
-        private void do_encrypt (string password)
+        private void doEncrypt (string password)
         {
             if (host == null || host.current_note == null) return;
 
-            string plaintext = host.get_note_markup ();
-            run_openssl.begin (false, plaintext, password, (obj, res) => {
-                string? ciphertext = run_openssl.end (res);
+            string plaintext = host.getNoteMarkup ();
+            runOpenssl.begin (false, plaintext, password, (obj, res) => {
+                string? ciphertext = runOpenssl.end (res);
                 if (ciphertext == null || ciphertext.length == 0) {
-                    host?.show_toast (_("Encryption failed"));
-                    set_btn_active (false);
+                    host?.showToast (_("Encryption failed"));
+                    setBtnActive (false);
                     return;
                 }
                 // Strip trailing newline from openssl -A output
@@ -164,20 +164,20 @@ namespace NoteMe
                 string new_body = ENCRYPTED_PREFIX + ciphertext;
                 if (host?.current_note != null)
                     host.current_note.body = new_body;
-                host?.save_current_note ();
-                host?.set_editor_locked (true);
-                host?.set_editor_editable (false);
-                set_btn_active (true);
-                host?.show_toast (_("Note encrypted"));
+                host?.saveCurrentNote ();
+                host?.setEditorLocked (true);
+                host?.setEditorEditable (false);
+                setBtnActive (true);
+                host?.showToast (_("Note encrypted"));
             });
         }
 
         // ── Decrypt flow ─────────────────────────────────────────────────────
 
-        private void ask_decrypt_password ()
+        private void askDecryptPassword ()
         {
             if (host == null || host.current_note == null) {
-                set_btn_active (false);
+                setBtnActive (false);
                 return;
             }
 
@@ -202,20 +202,20 @@ namespace NoteMe
 
             dialog.choose.begin (window, null, (obj, res) => {
                 if (dialog.choose.end (res) != "decrypt") {
-                    set_btn_active (true);   // stay locked
+                    setBtnActive (true);   // stay locked
                     return;
                 }
                 string pass = pass_entry.text;
                 if (pass.length == 0) {
-                    host?.show_toast (_("Password cannot be empty"));
-                    set_btn_active (true);
+                    host?.showToast (_("Password cannot be empty"));
+                    setBtnActive (true);
                     return;
                 }
-                do_decrypt (pass);
+                doDecrypt (pass);
             });
         }
 
-        private void do_decrypt (string password)
+        private void doDecrypt (string password)
         {
             if (host == null || host.current_note == null) return;
 
@@ -223,33 +223,33 @@ namespace NoteMe
             if (!body.has_prefix (ENCRYPTED_PREFIX)) return;
 
             string ciphertext = body.substring (ENCRYPTED_PREFIX.length);
-            run_openssl.begin (true, ciphertext, password, (obj, res) => {
-                string? plaintext = run_openssl.end (res);
+            runOpenssl.begin (true, ciphertext, password, (obj, res) => {
+                string? plaintext = runOpenssl.end (res);
                 if (plaintext == null || plaintext.length == 0) {
-                    host?.show_toast (_("Decryption failed — wrong password?"));
-                    set_btn_active (true);
+                    host?.showToast (_("Decryption failed — wrong password?"));
+                    setBtnActive (true);
                     return;
                 }
                 if (host?.current_note != null)
                     host.current_note.body = plaintext.strip ();
-                host?.save_current_note ();
-                host?.set_editor_locked (false);
-                host?.set_editor_markup_silent (host.current_note?.body ?? "");
-                host?.set_editor_editable (true);
-                set_btn_active (false);
-                host?.show_toast (_("Note decrypted"));
+                host?.saveCurrentNote ();
+                host?.setEditorLocked (false);
+                host?.setEditorMarkupSilent (host.current_note?.body ?? "");
+                host?.setEditorEditable (true);
+                setBtnActive (false);
+                host?.showToast (_("Note decrypted"));
             });
         }
 
         // ── OpenSSL subprocess ───────────────────────────────────────────────
 
-        private async string? run_openssl (bool decrypt, string input, string password)
+        private async string? runOpenssl (bool decrypt, string input, string password)
         {
             string? result = null;
-            SourceFunc resume = run_openssl.callback;
+            SourceFunc resume = runOpenssl.callback;
 
             new Thread<void> ("noteme-crypt", () => {
-                result = run_openssl_sync (decrypt, input, password);
+                result = runOpensslSync (decrypt, input, password);
                 Idle.add ((owned) resume);
             });
 
@@ -257,7 +257,7 @@ namespace NoteMe
             return result;
         }
 
-        private string? run_openssl_sync (bool decrypt, string input, string password)
+        private string? runOpensslSync (bool decrypt, string input, string password)
         {
             try {
                 string[] argv;

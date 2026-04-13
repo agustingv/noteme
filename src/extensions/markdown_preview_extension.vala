@@ -40,7 +40,7 @@ namespace NoteMe
             scroll.child             = view;
             scroll.visible           = false;
 
-            setup_tags ();
+            setupTags ();
 
             // Global shortcut so Ctrl+Shift+P works regardless of focus
             var ctrl = new Gtk.ShortcutController ();
@@ -59,22 +59,22 @@ namespace NoteMe
             button.label        = "MD";
             button.tooltip_text = _("Markdown Preview (Ctrl+Shift+P)");
             button.add_css_class ("flat");
-            button.toggled.connect (on_preview_toggled);
-            h.add_toolbar_widget (button);
+            button.toggled.connect (onPreviewToggled);
+            h.addToolbarWidget (button);
 
-            h.set_preview_widget (scroll);
+            h.setPreviewWidget (scroll);
 
-            h.note_selected.connect (on_note_selected);
-            h.note_content_changed.connect (on_content_changed);
+            h.note_selected.connect (onNoteSelected);
+            h.note_content_changed.connect (onContentChanged);
         }
 
         public void deactivate ()
         {
             if (host != null) {
-                host.note_selected.disconnect (on_note_selected);
-                host.note_content_changed.disconnect (on_content_changed);
-                host.remove_toolbar_widget (button);
-                host.set_preview_widget (null);
+                host.note_selected.disconnect (onNoteSelected);
+                host.note_content_changed.disconnect (onContentChanged);
+                host.removeToolbarWidget (button);
+                host.setPreviewWidget (null);
                 host = null;
             }
             button = null;
@@ -82,7 +82,7 @@ namespace NoteMe
             view   = null;
         }
 
-        private void setup_tags ()
+        private void setupTags ()
         {
             var pb = view.buffer;
 
@@ -123,36 +123,36 @@ namespace NoteMe
             pb.tag_table.add (underline_tag);
         }
 
-        private void on_preview_toggled ()
+        private void onPreviewToggled ()
         {
             if (scroll == null) return;
             scroll.visible = button.active;
             if (button.active) {
                 // Defer position and render until after GTK re-lays out the pane
                 GLib.Idle.add (() => {
-                    host?.center_preview_pane ();
-                    update_preview ();
+                    host?.centerPreviewPane ();
+                    updatePreview ();
                     return GLib.Source.REMOVE;
                 });
             }
         }
 
-        private void on_note_selected (Note? note)
+        private void onNoteSelected (Note? note)
         {
             if (button != null && button.active)
-                update_preview ();
+                updatePreview ();
         }
 
-        private void on_content_changed ()
+        private void onContentChanged ()
         {
             if (button != null && button.active)
-                update_preview ();
+                updatePreview ();
         }
 
-        private void update_preview ()
+        private void updatePreview ()
         {
             if (host == null || view == null) return;
-            string text = host.get_note_markdown ();
+            string text = host.getNoteMarkdown ();
             var pb = view.buffer;
             pb.set_text ("", 0);
             string[] lines = text.split ("\n");
@@ -162,46 +162,46 @@ namespace NoteMe
                     pb.get_end_iter (out iter);
                     pb.insert (ref iter, "\n", -1);
                 }
-                render_line (pb, lines[i]);
+                renderLine (pb, lines[i]);
             }
         }
 
-        private void render_line (Gtk.TextBuffer pb, string line)
+        private void renderLine (Gtk.TextBuffer pb, string line)
         {
             if (line.has_prefix ("### ")) {
-                render_tagged_line (pb, line.substring (4), h3);
+                renderTaggedLine (pb, line.substring (4), h3);
             } else if (line.has_prefix ("## ")) {
-                render_tagged_line (pb, line.substring (3), h2);
+                renderTaggedLine (pb, line.substring (3), h2);
             } else if (line.has_prefix ("# ")) {
-                render_tagged_line (pb, line.substring (2), h1);
+                renderTaggedLine (pb, line.substring (2), h1);
             } else if (line.has_prefix ("- ") || line.has_prefix ("* ") || line.has_prefix ("• ")) {
                 Gtk.TextIter iter;
                 pb.get_end_iter (out iter);
                 pb.insert (ref iter, "• ", -1);
                 // "• " is 4 bytes (3-byte UTF-8 char + space); "-" and "*" prefixes are 2 bytes
                 int skip = line.has_prefix ("• ") ? "• ".length : 2;
-                render_inline (pb, line.substring (skip));
+                renderInline (pb, line.substring (skip));
             } else if (line.has_prefix ("> ")) {
-                int from = pb_end_offset (pb);
-                render_inline (pb, line.substring (2));
-                pb_apply_from (pb, quote_tag, from);
+                int from = pbEndOffset (pb);
+                renderInline (pb, line.substring (2));
+                pbApplyFrom (pb, quote_tag, from);
             } else if (line == "---" || line == "***" || line == "___") {
                 Gtk.TextIter iter;
                 pb.get_end_iter (out iter);
                 pb.insert (ref iter, "────────────────────────────────", -1);
             } else {
-                render_inline (pb, line);
+                renderInline (pb, line);
             }
         }
 
-        private void render_tagged_line (Gtk.TextBuffer pb, string text, Gtk.TextTag tag)
+        private void renderTaggedLine (Gtk.TextBuffer pb, string text, Gtk.TextTag tag)
         {
-            int from = pb_end_offset (pb);
-            render_inline (pb, text);
-            pb_apply_from (pb, tag, from);
+            int from = pbEndOffset (pb);
+            renderInline (pb, text);
+            pbApplyFrom (pb, tag, from);
         }
 
-        private void render_inline (Gtk.TextBuffer pb, string text)
+        private void renderInline (Gtk.TextBuffer pb, string text)
         {
             int i   = 0;
             int len = text.length;
@@ -210,46 +210,46 @@ namespace NoteMe
             while (i < len) {
                 if (i + 1 < len && text[i] == '*' && text[i + 1] == '*') {
                     // **bold**
-                    flush_plain (pb, plain);
+                    flushPlain (pb, plain);
                     int close = text.index_of ("**", i + 2);
                     if (close > i + 1) {
-                        int from = pb_end_offset (pb);
+                        int from = pbEndOffset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 2, close - i - 2), -1);
-                        pb_apply_from (pb, bold_tag, from);
+                        pbApplyFrom (pb, bold_tag, from);
                         i = close + 2;
                     } else { plain.append ("**"); i += 2; }
                 } else if (text[i] == '*') {
                     // *italic*
-                    flush_plain (pb, plain);
+                    flushPlain (pb, plain);
                     int close = text.index_of ("*", i + 1);
                     if (close > i) {
-                        int from = pb_end_offset (pb);
+                        int from = pbEndOffset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 1, close - i - 1), -1);
-                        pb_apply_from (pb, italic_tag, from);
+                        pbApplyFrom (pb, italic_tag, from);
                         i = close + 1;
                     } else { plain.append_c ('*'); i++; }
                 } else if (i + 1 < len && text[i] == '_' && text[i + 1] == '_') {
                     // __underline__
-                    flush_plain (pb, plain);
+                    flushPlain (pb, plain);
                     int close = text.index_of ("__", i + 2);
                     if (close > i + 1) {
-                        int from = pb_end_offset (pb);
+                        int from = pbEndOffset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 2, close - i - 2), -1);
-                        pb_apply_from (pb, underline_tag, from);
+                        pbApplyFrom (pb, underline_tag, from);
                         i = close + 2;
                     } else { plain.append ("__"); i += 2; }
                 } else if (text[i] == '`') {
                     // `code`
-                    flush_plain (pb, plain);
+                    flushPlain (pb, plain);
                     int close = text.index_of ("`", i + 1);
                     if (close > i) {
-                        int from = pb_end_offset (pb);
+                        int from = pbEndOffset (pb);
                         Gtk.TextIter it; pb.get_end_iter (out it);
                         pb.insert (ref it, text.substring (i + 1, close - i - 1), -1);
-                        pb_apply_from (pb, code_tag, from);
+                        pbApplyFrom (pb, code_tag, from);
                         i = close + 1;
                     } else { plain.append_c ('`'); i++; }
                 } else {
@@ -258,10 +258,10 @@ namespace NoteMe
                     i += (int) c.to_utf8 (null);
                 }
             }
-            flush_plain (pb, plain);
+            flushPlain (pb, plain);
         }
 
-        private void flush_plain (Gtk.TextBuffer pb, StringBuilder plain)
+        private void flushPlain (Gtk.TextBuffer pb, StringBuilder plain)
         {
             if (plain.len == 0) return;
             Gtk.TextIter it;
@@ -270,14 +270,14 @@ namespace NoteMe
             plain.truncate (0);
         }
 
-        private int pb_end_offset (Gtk.TextBuffer pb)
+        private int pbEndOffset (Gtk.TextBuffer pb)
         {
             Gtk.TextIter it;
             pb.get_end_iter (out it);
             return it.get_offset ();
         }
 
-        private void pb_apply_from (Gtk.TextBuffer pb, Gtk.TextTag tag, int from)
+        private void pbApplyFrom (Gtk.TextBuffer pb, Gtk.TextTag tag, int from)
         {
             Gtk.TextIter s, e;
             pb.get_iter_at_offset (out s, from);

@@ -13,14 +13,14 @@ namespace NoteMe {
             );
             DirUtils.create_with_parents (notes_dir, 0755);
             _store = new ListStore (typeof (Note));
-            load_all ();
+            loadAll ();
         }
 
-        private string note_path (Note note) {
+        private string notePath (Note note) {
             return Path.build_filename (notes_dir, note.created_at.replace (":", "-") + ".note");
         }
 
-        private void load_all () {
+        private void loadAll () {
             var notes = new GenericArray<Note> ();
             try {
                 var dir = Dir.open (notes_dir);
@@ -48,21 +48,21 @@ namespace NoteMe {
         public void save (Note note) {
             note.updated_at = new DateTime.now_local ().format ("%Y-%m-%dT%H:%M:%S");
             try {
-                FileUtils.set_contents (note_path (note), note.to_string ());
+                FileUtils.set_contents (notePath (note), note.to_string ());
             } catch (Error e) {
                 warning ("Could not save note: %s", e.message);
             }
         }
 
-        public void delete_note (Note note) {
-            if (FileUtils.unlink (note_path (note)) != 0)
-                warning ("Could not delete note file: %s", note_path (note));
+        public void deleteNote (Note note) {
+            if (FileUtils.unlink (notePath (note)) != 0)
+                warning ("Could not delete note file: %s", notePath (note));
             uint pos;
             if (_store.find (note, out pos))
                 _store.remove (pos);
         }
 
-        public Note create_note () {
+        public Note createNote () {
             var note = new Note ("Untitled", "");
             _store.insert (0, note);
             save (note);

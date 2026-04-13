@@ -69,7 +69,7 @@ namespace NoteMe
             });
             buffer.apply_tag.connect  ((_t, _s, _e) => { if (!updating) changed (); });
             buffer.remove_tag.connect ((_t, _s, _e) => { if (!updating) changed (); });
-            buffer.notify["cursor-position"].connect (() => update_toolbar_state ());
+            buffer.notify["cursor-position"].connect (() => updateToolbarState ());
 
             // Keyboard shortcuts scoped to the text view
             var ctrl = new Gtk.ShortcutController ();
@@ -98,11 +98,11 @@ namespace NoteMe
 
             // Enter key: continue list on the next line
             var key_ctrl = new Gtk.EventControllerKey ();
-            key_ctrl.key_pressed.connect (on_key_pressed);
+            key_ctrl.key_pressed.connect (onKeyPressed);
             text_view.add_controller (key_ctrl);
         }
 
-        private void update_toolbar_state () {
+        private void updateToolbarState () {
             Gtk.TextIter cursor;
             text_view.buffer.get_iter_at_mark (out cursor, text_view.buffer.get_insert ());
             updating = true;
@@ -112,7 +112,7 @@ namespace NoteMe
             code_button.active      = cursor.has_tag (tag_code);
             var ls = cursor;
             ls.set_line_offset (0);
-            list_button.active = line_has_bullet (ls);
+            list_button.active = lineHasBullet (ls);
             updating = false;
 
             int line = cursor.get_line () + 1;
@@ -121,27 +121,27 @@ namespace NoteMe
         }
 
         [GtkCallback]
-        private void on_bold_toggled () {
-            if (!updating) apply_tag (tag_bold, bold_button.active);
+        private void onBoldToggled () {
+            if (!updating) applyTag (tag_bold, bold_button.active);
         }
 
         [GtkCallback]
-        private void on_italic_toggled () {
-            if (!updating) apply_tag (tag_italic, italic_button.active);
+        private void onItalicToggled () {
+            if (!updating) applyTag (tag_italic, italic_button.active);
         }
 
         [GtkCallback]
-        private void on_underline_toggled () {
-            if (!updating) apply_tag (tag_underline, underline_button.active);
+        private void onUnderlineToggled () {
+            if (!updating) applyTag (tag_underline, underline_button.active);
         }
 
         [GtkCallback]
-        private void on_code_toggled () {
-            if (!updating) apply_tag (tag_code, code_button.active);
+        private void onCodeToggled () {
+            if (!updating) applyTag (tag_code, code_button.active);
         }
 
         [GtkCallback]
-        private void on_list_toggled () {
+        private void onListToggled () {
             if (updating) return;
             var buffer = text_view.buffer;
 
@@ -163,7 +163,7 @@ namespace NoteMe
             for (int l = first_line; l <= last_line && all_bulleted; l++) {
                 Gtk.TextIter li;
                 buffer.get_iter_at_line (out li, l);
-                if (!line_has_bullet (li)) all_bulleted = false;
+                if (!lineHasBullet (li)) all_bulleted = false;
             }
 
             buffer.begin_user_action ();
@@ -172,7 +172,7 @@ namespace NoteMe
                 for (int l = last_line; l >= first_line; l--) {
                     Gtk.TextIter li, bullet_end;
                     buffer.get_iter_at_line (out li, l);
-                    if (!line_has_bullet (li)) continue;
+                    if (!lineHasBullet (li)) continue;
                     bullet_end = li;
                     bullet_end.forward_chars (2); // '•' + ' '
                     buffer.delete (ref li, ref bullet_end);
@@ -181,16 +181,16 @@ namespace NoteMe
                 for (int l = first_line; l <= last_line; l++) {
                     Gtk.TextIter li;
                     buffer.get_iter_at_line (out li, l);
-                    if (!line_has_bullet (li))
+                    if (!lineHasBullet (li))
                         buffer.insert (ref li, "• ", -1);
                 }
             }
             buffer.end_user_action ();
-            update_toolbar_state ();
+            updateToolbarState ();
         }
 
         [GtkCallback]
-        private void on_export_clicked () {
+        private void onExportClicked () {
             var dialog = new Gtk.FileDialog ();
             dialog.title = _("Export Note");
             dialog.initial_name = "note.md";
@@ -218,7 +218,7 @@ namespace NoteMe
             dialog.save.begin (parent, null, (obj, res) => {
                 try {
                     var file = dialog.save.end (res);
-                    string content = markup_to_markdown (get_markup ());
+                    string content = markupToMarkdown (getMarkup ());
                     string? new_etag;
                     file.replace_contents (
                         content.data, null, false,
@@ -232,7 +232,7 @@ namespace NoteMe
         }
 
         // Convert stored HTML-like markup to inline markdown for export and preview.
-        public string markup_to_markdown (string markup) {
+        public string markupToMarkdown (string markup) {
             var sb = new StringBuilder ();
             int i = 0;
             int len = markup.length;
@@ -242,7 +242,7 @@ namespace NoteMe
                     if (close < 0) break;
                     string tag = markup.substring (i + 1, close - i - 1);
                     if (tag.has_prefix ("img ")) {
-                        string? src = parse_img_src (tag);
+                        string? src = parseImgSrc (tag);
                         sb.append ("![image](%s)".printf (src ?? ""));
                     } else switch (tag) {
                         case "b":     sb.append ("**"); break;
@@ -277,7 +277,7 @@ namespace NoteMe
         }
 
         // Returns true if the line beginning at `iter` starts with "• "
-        private bool line_has_bullet (Gtk.TextIter iter) 
+        private bool lineHasBullet (Gtk.TextIter iter) 
         {
             if (iter.get_char () != '•') return false;
             var next = iter;
@@ -286,7 +286,7 @@ namespace NoteMe
         }
 
         // Enter key handler: continue list or exit empty list item
-        private bool on_key_pressed (uint keyval, uint _keycode, Gdk.ModifierType state) 
+        private bool onKeyPressed (uint keyval, uint _keycode, Gdk.ModifierType state) 
         {
             if (keyval != Gdk.Key.Return && keyval != Gdk.Key.KP_Enter) return false;
             // Ignore if modifier keys are held (Shift+Enter etc.)
@@ -299,7 +299,7 @@ namespace NoteMe
 
             Gtk.TextIter line_start = cursor;
             line_start.set_line_offset (0);
-            if (!line_has_bullet (line_start)) return false;
+            if (!lineHasBullet (line_start)) return false;
 
             // If cursor is right after "• " (empty list item) → exit list
             var after_bullet = line_start;
@@ -320,7 +320,7 @@ namespace NoteMe
             return true;
         }
 
-        private void apply_tag (Gtk.TextTag tag, bool add) 
+        private void applyTag (Gtk.TextTag tag, bool add) 
         {
             var buffer = text_view.buffer;
             Gtk.TextIter start, end;
@@ -331,47 +331,47 @@ namespace NoteMe
                 buffer.remove_tag (tag, start, end);
         }
 
-        public void set_editable (bool editable)
+        public void setEditable (bool editable)
         {
             text_view.editable = editable;
         }
 
-        public void set_locked (bool locked)
+        public void setLocked (bool locked)
         {
             editor_stack.visible_child_name = locked ? "locked" : "editor";
         }
 
         // Set markup and fire the changed signal (used by extensions that modify note body)
-        public void set_markup_silent (string markup)
+        public void setMarkupSilent (string markup)
         {
             updating = true;
-            parse_markup (markup);
+            parseMarkup (markup);
             updating = false;
         }
 
-        public void set_preview_widget (Gtk.Widget? widget)
+        public void setPreviewWidget (Gtk.Widget? widget)
         {
             preview_pane.end_child = widget;
         }
 
-        public void center_preview_pane ()
+        public void centerPreviewPane ()
         {
             int w = preview_pane.get_width ();
             preview_pane.set_position (w > 0 ? w / 2 : 400);
         }
 
-        public void add_text_view_controller (Gtk.EventController controller)
+        public void addTextViewController (Gtk.EventController controller)
         {
             text_view.add_controller (controller);
         }
 
-        public void remove_text_view_controller (Gtk.EventController controller)
+        public void removeTextViewController (Gtk.EventController controller)
         {
             text_view.remove_controller (controller);
         }
 
         // Move the cursor to the given widget-relative coordinates (used for drop positioning)
-        public void place_cursor_at_coords (double x, double y)
+        public void placeCursorAtCoords (double x, double y)
         {
             int bx, by;
             text_view.window_to_buffer_coords (Gtk.TextWindowType.WIDGET, (int) x, (int) y, out bx, out by);
@@ -380,34 +380,34 @@ namespace NoteMe
             text_view.buffer.place_cursor (iter);
         }
 
-        public void add_extension_widget (Gtk.Widget widget)
+        public void addExtensionWidget (Gtk.Widget widget)
         {
             extension_box.append (widget);
         }
 
-        public void remove_extension_widget (Gtk.Widget widget) 
+        public void removeExtensionWidget (Gtk.Widget widget) 
         {
             extension_box.remove (widget);
         }
 
         // Insert an image at the current cursor position
-        public void insert_image_at_cursor (string src_path) 
+        public void insertImageAtCursor (string src_path) 
         {
             var buffer = text_view.buffer;
             Gtk.TextIter cursor;
             buffer.get_iter_at_mark (out cursor, buffer.get_insert ());
             var anchor = buffer.create_child_anchor (cursor);
             anchor_images.set (anchor, src_path);
-            text_view.add_child_at_anchor (make_image_widget (src_path), anchor);
+            text_view.add_child_at_anchor (makeImageWidget (src_path), anchor);
             if (!updating) changed ();
         }
 
-        public void add_footer_extension_widget (Gtk.Widget widget) 
+        public void addFooterExtensionWidget (Gtk.Widget widget) 
         {
             footer_extension_box.append (widget);
         }
 
-        public void remove_footer_extension_widget (Gtk.Widget widget) 
+        public void removeFooterExtensionWidget (Gtk.Widget widget) 
         {
             footer_extension_box.remove (widget);
         }
@@ -417,7 +417,7 @@ namespace NoteMe
             text_view.grab_focus ();
         }
 
-        public void set_font_desc (string font_desc) 
+        public void setFontDesc (string font_desc) 
         {
             var desc    = Pango.FontDescription.from_string (font_desc);
             var family  = desc.get_family () ?? "Sans";
@@ -433,7 +433,7 @@ namespace NoteMe
 
         // Serialisation
 
-        public string get_markup () 
+        public string getMarkup () 
         {
             var buffer = text_view.buffer;
             var sb = new StringBuilder ();
@@ -451,10 +451,10 @@ namespace NoteMe
                     continue;
                 }
                 foreach (unowned Gtk.TextTag tag in iter.get_toggled_tags (false))
-                    sb.append (close_tag (tag.name));
+                    sb.append (closeTag (tag.name));
                 foreach (unowned Gtk.TextTag tag in iter.get_toggled_tags (true))
-                    sb.append (open_tag (tag.name));
-                append_escaped (sb, iter.get_char ());
+                    sb.append (openTag (tag.name));
+                appendEscaped (sb, iter.get_char ());
                 iter.forward_char ();
             }
 
@@ -462,19 +462,19 @@ namespace NoteMe
             Gtk.TextIter end_iter;
             buffer.get_end_iter (out end_iter);
             foreach (unowned Gtk.TextTag tag in end_iter.get_toggled_tags (false))
-                sb.append (close_tag (tag.name));
+                sb.append (closeTag (tag.name));
 
             return sb.str;
         }
 
-        public void set_markup (string markup) 
+        public void setMarkup (string markup) 
         {
             updating = true;
-            parse_markup (markup);
+            parseMarkup (markup);
             updating = false;
         }
 
-        private string open_tag (string? name) {
+        private string openTag (string? name) {
             switch (name) 
             {
                 case "bold":      
@@ -490,7 +490,7 @@ namespace NoteMe
             }
         }
 
-        private string close_tag (string? name) 
+        private string closeTag (string? name) 
         {
             switch (name) 
             {
@@ -507,7 +507,7 @@ namespace NoteMe
             }
         }
 
-        private void append_escaped (StringBuilder sb, unichar c) 
+        private void appendEscaped (StringBuilder sb, unichar c) 
         {
             switch (c) 
             {
@@ -523,7 +523,7 @@ namespace NoteMe
         }
 
         // Deserialisation
-        private void parse_markup (string markup) 
+        private void parseMarkup (string markup) 
         {
             var buffer = text_view.buffer;
             buffer.set_text ("", 0);
@@ -552,14 +552,14 @@ namespace NoteMe
                     if (tag_str.has_prefix ("img ")) 
                     {
                         // Self-closing image tag: <img src="..."/>
-                        string? src = parse_img_src (tag_str);
+                        string? src = parseImgSrc (tag_str);
                         if (src != null) 
                         {
                             Gtk.TextIter end_it;
                             buffer.get_end_iter (out end_it);
                             var anchor = buffer.create_child_anchor (end_it);
                             anchor_images.set (anchor, src);
-                            text_view.add_child_at_anchor (make_image_widget (src), anchor);
+                            text_view.add_child_at_anchor (makeImageWidget (src), anchor);
                         }
                     } 
                     else if (tag_str == "b" || tag_str == "i" || tag_str == "u" || tag_str == "code") 
@@ -633,7 +633,7 @@ namespace NoteMe
             }
         }
 
-        private string? parse_img_src (string tag_str) 
+        private string? parseImgSrc (string tag_str) 
         {
             int start = tag_str.index_of ("src=\"");
             if (start < 0) return null;
@@ -647,7 +647,7 @@ namespace NoteMe
                           .replace ("&quot;", "\"");
         }
 
-        private Gtk.Widget make_image_widget (string path)
+        private Gtk.Widget makeImageWidget (string path)
         {
             var picture = new Gtk.Picture.for_filename (path);
             picture.content_fit    = Gtk.ContentFit.SCALE_DOWN;

@@ -55,15 +55,15 @@ namespace NoteMe {
                 return note_row;
             });
 
-            notes_list.row_selected.connect (on_row_selected);
-            title_entry.changed.connect (on_title_changed);
-            rich_editor.changed.connect (on_body_changed);
+            notes_list.row_selected.connect (onRowSelected);
+            title_entry.changed.connect (onTitleChanged);
+            rich_editor.changed.connect (onBodyChanged);
 
             search_entry.search_changed.connect (() => custom_filter.changed (Gtk.FilterChange.DIFFERENT));
 
-            setup_color_picker ();
-            update_empty_state ();
-            apply_font_settings ();
+            setupColorPicker ();
+            updateEmptyState ();
+            applyFontSettings ();
             rich_editor.image_display_width = prefs.image_display_width;
 
             host        = new ExtensionHost ();
@@ -77,28 +77,28 @@ namespace NoteMe {
             host.save_note_requested.connect (() => {
                 if (current_note != null) store.save (current_note);
             });
-            ext_manager.activate_all (host);
+            ext_manager.activateAll (host);
 
             var first = notes_list.get_row_at_index (0);
             if (first != null) notes_list.select_row (first);
         }
 
-        public void apply_font_settings () {
-            rich_editor.set_font_desc (prefs.editor_font_desc ?? "Sans 12");
+        public void applyFontSettings () {
+            rich_editor.setFontDesc (prefs.editor_font_desc ?? "Sans 12");
         }
 
-        public void apply_image_settings () {
+        public void applyImageSettings () {
             rich_editor.image_display_width = prefs.image_display_width;
             // Reload the current note so existing embedded images resize immediately
             if (current_note != null) {
                 updating = true;
-                rich_editor.set_markup (current_note.body);
+                rich_editor.setMarkup (current_note.body);
                 updating = false;
             }
         }
 
 
-        private void setup_color_picker () {
+        private void setupColorPicker () {
             // Preset swatch colors (empty string = no color / default)
             string[] colors = {
                 "", "#f28b82", "#fbbc04", "#fff475", "#ccff90",
@@ -163,8 +163,8 @@ namespace NoteMe {
         }
 
         [GtkCallback]
-        private void on_new_note_clicked () {
-            var note = store.create_note ();
+        private void onNewNoteClicked () {
+            var note = store.createNote ();
             for (uint i = 0; i < sort_model.get_n_items (); i++) {
                 if (sort_model.get_item (i) == note) {
                     notes_list.select_row (notes_list.get_row_at_index ((int) i));
@@ -175,7 +175,7 @@ namespace NoteMe {
         }
 
         [GtkCallback]
-        private void on_delete_clicked () {
+        private void onDeleteClicked () {
             if (current_note == null) return;
 
             var dialog = new Adw.AlertDialog (
@@ -191,7 +191,7 @@ namespace NoteMe {
                     var selected = notes_list.get_selected_row ();
                     int idx = selected != null ? selected.get_index () : 0;
 
-                    store.delete_note (current_note);
+                    store.deleteNote (current_note);
                     current_note = null;
 
                     // Try next row at same index (shifted up after deletion),
@@ -203,18 +203,18 @@ namespace NoteMe {
                     if (next != null)
                         notes_list.select_row (next);
                     else
-                        update_empty_state ();
+                        updateEmptyState ();
                 }
             });
         }
 
-        private void on_row_selected (Gtk.ListBoxRow? row) {
+        private void onRowSelected (Gtk.ListBoxRow? row) {
             if (resorting) return;
             if (row == null) {
                 current_note     = null;
                 host.current_note = null;
                 host.note_selected (null);
-                update_empty_state ();
+                updateEmptyState ();
                 return;
             }
             var note = ((NoteRow) row.child).note;
@@ -222,34 +222,34 @@ namespace NoteMe {
             current_note      = note;
             host.current_note  = current_note;
             host.note_selected (current_note);
-            load_note (current_note);
+            loadNote (current_note);
             content_stack.visible_child_name = "editor";
             delete_button.sensitive = true;
             color_button.sensitive  = true;
         }
 
-        private void load_note (Note note) {
+        private void loadNote (Note note) {
             updating = true;
             title_entry.text = note.title;
-            rich_editor.set_markup (note.body);
+            rich_editor.setMarkup (note.body);
             updating = false;
         }
 
-        private void on_title_changed () {
+        private void onTitleChanged () {
             if (updating || current_note == null) return;
             current_note.title = title_entry.text;
             store.save (current_note);
-            resort_and_reselect ();
+            resortAndReselect ();
         }
 
-        private void on_body_changed () {
+        private void onBodyChanged () {
             if (updating || current_note == null) return;
-            current_note.body = rich_editor.get_markup ();
+            current_note.body = rich_editor.getMarkup ();
             store.save (current_note);
-            resort_and_reselect ();
+            resortAndReselect ();
         }
 
-        private void resort_and_reselect () {
+        private void resortAndReselect () {
             var note   = current_note;
             resorting  = true;
             sorter.changed (Gtk.SorterChange.DIFFERENT);
@@ -262,7 +262,7 @@ namespace NoteMe {
             }
         }
 
-        private void update_empty_state () {
+        private void updateEmptyState () {
             if (store.store.get_n_items () == 0 || current_note == null) {
                 content_stack.visible_child_name = "empty";
                 delete_button.sensitive = false;

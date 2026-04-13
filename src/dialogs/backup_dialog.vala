@@ -19,7 +19,7 @@ namespace NoteMe
 
             var folder_row = new Adw.ActionRow ();
             folder_row.title    = _("Destination Folder");
-            folder_row.subtitle = resolve_folder (prefs.backup_folder);
+            folder_row.subtitle = resolveFolder (prefs.backup_folder);
 
             var folder_btn = new Gtk.Button.from_icon_name ("folder-open-symbolic");
             folder_btn.tooltip_text = _("Choose folder…");
@@ -40,7 +40,7 @@ namespace NoteMe
                         var folder = fd.select_folder.end (res);
                         prefs.backup_folder = folder.get_path ();
                         prefs.save ();
-                        folder_row.subtitle = resolve_folder (prefs.backup_folder);
+                        folder_row.subtitle = resolveFolder (prefs.backup_folder);
                     } catch { /* cancelled */ }
                 });
             });
@@ -61,7 +61,7 @@ namespace NoteMe
             dest_group.add (create_row);
 
             create_btn.clicked.connect (() => {
-                run_backup (prefs, create_btn, backup_status_row);
+                runBackup (prefs, create_btn, backup_status_row);
             });
             
             var import_group = new Adw.PreferencesGroup ();
@@ -122,11 +122,11 @@ namespace NoteMe
             });
 
             restore_btn.clicked.connect (() => {
-                confirm_restore (restore_btn);
+                confirmRestore (restore_btn);
             });
         }
 
-        private void confirm_restore (Gtk.Button restore_btn)
+        private void confirmRestore (Gtk.Button restore_btn)
         {
             var window  = get_root () as Gtk.Window;
             var confirm = new Adw.AlertDialog (
@@ -139,11 +139,11 @@ namespace NoteMe
             confirm.default_response = "cancel";
             confirm.choose.begin (window, null, (obj, res) => {
                 if (confirm.choose.end (res) == "restore")
-                    run_restore (restore_btn);
+                    runRestore (restore_btn);
             });
         }
 
-        private void run_restore (Gtk.Button restore_btn)
+        private void runRestore (Gtk.Button restore_btn)
         {
             if (selected_backup == null) return;
 
@@ -159,23 +159,23 @@ namespace NoteMe
                     try {
                         proc.wait_async.end (res);
                         if (proc.get_successful ()) {
-                            show_restart_dialog ();
+                            showRestartDialog ();
                         } else {
-                            show_error (_("Restore failed"), read_stderr (proc));
+                            showError (_("Restore failed"), readStderr (proc));
                             restore_btn.sensitive = true;
                         }
                     } catch (Error e) {
-                        show_error (_("Restore error"), e.message);
+                        showError (_("Restore error"), e.message);
                         restore_btn.sensitive = true;
                     }
                 });
             } catch (Error e) {
-                show_error (_("Restore error"), e.message);
+                showError (_("Restore error"), e.message);
                 restore_btn.sensitive = true;
             }
         }
 
-        private void show_restart_dialog ()
+        private void showRestartDialog ()
         {
             var window  = get_root () as Gtk.Window;
             var dialog  = new Adw.AlertDialog (
@@ -203,9 +203,9 @@ namespace NoteMe
             });
         }
 
-        private void run_backup (Preferences prefs, Gtk.Button btn, Adw.ActionRow status_row)
+        private void runBackup (Preferences prefs, Gtk.Button btn, Adw.ActionRow status_row)
         {
-            string dest_folder = resolve_folder (prefs.backup_folder);
+            string dest_folder = resolveFolder (prefs.backup_folder);
             string data_dir    = GLib.Environment.get_user_data_dir ();
             string timestamp   = new DateTime.now_local ().format ("%Y-%m-%dT%H-%M-%S");
             string filename    = "noteme-backup-%s.tar.gz".printf (timestamp);
@@ -227,20 +227,20 @@ namespace NoteMe
                             status_row.subtitle = filename;
                             status_row.visible  = true;
                         } else {
-                            show_error (_("Backup failed"), read_stderr (proc));
+                            showError (_("Backup failed"), readStderr (proc));
                         }
                     } catch (Error e) {
-                        show_error (_("Backup error"), e.message);
+                        showError (_("Backup error"), e.message);
                     }
                     btn.sensitive = true;
                 });
             } catch (Error e) {
-                show_error (_("Backup error"), e.message);
+                showError (_("Backup error"), e.message);
                 btn.sensitive = true;
             }
         }
 
-        private string read_stderr (GLib.Subprocess proc)
+        private string readStderr (GLib.Subprocess proc)
         {
             try {
                 var bytes = proc.get_stderr_pipe ()?.read_bytes (4096, null);
@@ -249,7 +249,7 @@ namespace NoteMe
             return "";
         }
 
-        private void show_error (string title, string detail)
+        private void showError (string title, string detail)
         {
             var window = get_root () as Gtk.Window;
             var dialog = new Adw.AlertDialog (title, detail.length > 0 ? detail : null);
@@ -257,7 +257,7 @@ namespace NoteMe
             dialog.present (window);
         }
 
-        private string resolve_folder (string stored)
+        private string resolveFolder (string stored)
         {
             if (stored.length > 0) return stored;
             string? docs = GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOCUMENTS);

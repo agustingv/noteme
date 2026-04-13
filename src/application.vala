@@ -24,25 +24,25 @@ namespace NoteMe
             ext_manager.register (new NoteInfoExtension ());
             ext_manager.register (new ImageExtension ());
             ext_manager.register (new CryptExtension ());
-            ext_manager.load_from_directory (
+            ext_manager.loadFromDirectory (
                 // Path differs between running from build dir and installed app, but this is fine since both will be in the same place relative to the executable
                 Path.build_filename (Environment.get_user_data_dir (), "noteme", "extensions")
             );
 
             var about_action = new SimpleAction ("about", null);
-            about_action.activate.connect (show_about);
+            about_action.activate.connect (showAbout);
             add_action (about_action);
 
             var prefs_action = new SimpleAction ("preferences", null);
-            prefs_action.activate.connect (show_preferences);
+            prefs_action.activate.connect (showPreferences);
             add_action (prefs_action);
 
             var ext_action = new SimpleAction ("extensions", null);
-            ext_action.activate.connect (show_extensions);
+            ext_action.activate.connect (showExtensions);
             add_action (ext_action);
 
             var backup_action = new SimpleAction ("backups", null);
-            backup_action.activate.connect (show_backups);
+            backup_action.activate.connect (showBackups);
             add_action (backup_action);
 
             set_accels_for_action ("app.preferences", { "<Ctrl>comma" });
@@ -57,35 +57,35 @@ namespace NoteMe
             win.present ();
         }
 
-        private void show_preferences ()
+        private void showPreferences ()
         {
             var dialog = new PreferencesDialog (prefs);
             dialog.font_changed.connect ((desc) => {
                 foreach (var window in get_windows ())
                     if (window is MainWindow)
-                        ((MainWindow) window).apply_font_settings ();
+                        ((MainWindow) window).applyFontSettings ();
             });
             dialog.image_size_changed.connect (() => {
                 foreach (var window in get_windows ())
                     if (window is MainWindow)
-                        ((MainWindow) window).apply_image_settings ();
+                        ((MainWindow) window).applyImageSettings ();
             });
             dialog.present (active_window);
         }
 
-        private void show_extensions ()
+        private void showExtensions ()
         {
             var dialog = new ExtensionsDialog (ext_manager);
             dialog.present (active_window);
         }
 
-        private void show_backups ()
+        private void showBackups ()
         {
             var dialog = new BackupDialog (prefs);
             dialog.present (active_window);
         }
 
-        private void show_about () 
+        private void showAbout () 
         {
 
             var dialog = new Adw.AboutDialog ();

@@ -18,20 +18,20 @@ namespace NoteMe {
         }
 
         construct {
-            color_strip.set_draw_func (draw_color);
+            color_strip.set_draw_func (drawColor);
 
-            note.notify["title"].connect  (update_labels);
-            note.notify["body"].connect   (update_labels);
+            note.notify["title"].connect  (updateLabels);
+            note.notify["body"].connect   (updateLabels);
             note.notify["color"].connect  (() => color_strip.queue_draw ());
-            note.notify["pinned"].connect (update_pin_style);
+            note.notify["pinned"].connect (updatePinStyle);
 
             pin_button.clicked.connect (() => pin_toggled (note));
 
-            update_labels ();
-            update_pin_style ();
+            updateLabels ();
+            updatePinStyle ();
         }
 
-        private void update_pin_style () {
+        private void updatePinStyle () {
             if (note.pinned) {
                 pin_button.remove_css_class ("dim-label");
                 pin_button.tooltip_text = _("Unpin note");
@@ -41,19 +41,19 @@ namespace NoteMe {
             }
         }
 
-        private void update_labels () {
+        private void updateLabels () {
             title_label.label = note.title.length > 0 ? note.title : "Untitled";
             bool encrypted    = note.body.has_prefix ("ENCRYPTED:");
             lock_icon.visible = encrypted;
             if (encrypted) {
                 preview_label.label = _("Encrypted note");
             } else {
-                var preview         = strip_markup (note.body).replace ("\n", " ");
+                var preview         = stripMarkup (note.body).replace ("\n", " ");
                 preview_label.label = preview.length > 60 ? preview.substring (0, 60) + "…" : preview;
             }
         }
 
-        private string strip_markup (string markup) {
+        private string stripMarkup (string markup) {
             var sb = new StringBuilder ();
             int i = 0;
             int len = markup.length;
@@ -83,7 +83,7 @@ namespace NoteMe {
             return sb.str;
         }
 
-        private void draw_color (Gtk.DrawingArea _da, Cairo.Context cr, int w, int h) {
+        private void drawColor (Gtk.DrawingArea _da, Cairo.Context cr, int w, int h) {
             if (note.color == "") return;
             var rgba = Gdk.RGBA ();
             rgba.parse (note.color);
