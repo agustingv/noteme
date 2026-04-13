@@ -151,8 +151,8 @@ msgstr "Extensiones"
 msgid "Installed Extensions"
 msgstr "Extensiones instaladas"
 
-msgid "External plugins can be placed in ~/.local/share/noteme/plugins/ as .so files."
-msgstr "Los complementos externos se pueden colocar en ~/.local/share/noteme/plugins/ como archivos .so."
+msgid "External plugins can be placed in %s as .so files. See README.md in https://github.com/agustingv/noteme how to create your own."
+msgstr "Los complementos externos se pueden colocar en %s como archivos .so. Consulta el README.md en https://github.com/agustingv/noteme para saber cómo crear el tuyo."
 
 # Word Count extension
 msgid "Word Count"
@@ -225,6 +225,58 @@ msgstr "< 1 min"
 msgid "%d min"
 msgstr "%d min"
 
+# Crypt extension
+msgid "Note Encryption"
+msgstr "Cifrado de notas"
+
+msgid "Encrypt and decrypt notes with a password (AES-256)"
+msgstr "Cifra y descifra notas con una contraseña (AES-256)"
+
+msgid "Encrypt / Decrypt Note"
+msgstr "Cifrar / Descifrar nota"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
+msgid "Encrypt Note"
+msgstr "Cifrar nota"
+
+msgid "Enter a password to encrypt this note. You will need the password to read it again."
+msgstr "Introduce una contraseña para cifrar esta nota. La necesitarás para volver a leerla."
+
+msgid "Encrypt"
+msgstr "Cifrar"
+
+msgid "Password cannot be empty"
+msgstr "La contraseña no puede estar vacía"
+
+msgid "Passwords do not match"
+msgstr "Las contraseñas no coinciden"
+
+msgid "Encryption failed"
+msgstr "Error al cifrar"
+
+msgid "Note encrypted"
+msgstr "Nota cifrada"
+
+msgid "Decrypt Note"
+msgstr "Descifrar nota"
+
+msgid "Enter the password to decrypt and view this note."
+msgstr "Introduce la contraseña para descifrar y ver esta nota."
+
+msgid "Decrypt"
+msgstr "Descifrar"
+
+msgid "Decryption failed — wrong password?"
+msgstr "Error al descifrar: ¿contraseña incorrecta?"
+
+msgid "Note decrypted"
+msgstr "Nota descifrada"
+
 # Image extension
 msgid "Insert Image"
 msgstr "Insertar imagen"
@@ -237,3 +289,85 @@ msgstr "Seleccionar imagen"
 
 msgid "Images"
 msgstr "Imágenes"
+
+# Backup dialog
+msgid "Backups"
+msgstr "Copias de seguridad"
+
+msgid "Create Backup"
+msgstr "Crear copia de seguridad"
+
+msgid "Destination Folder"
+msgstr "Carpeta de destino"
+
+msgid "Choose folder…"
+msgstr "Elegir carpeta…"
+
+msgid "Choose Backup Folder"
+msgstr "Elegir carpeta de copia de seguridad"
+
+msgid "Archives all notes and images into a tar.gz file"
+msgstr "Archiva todas las notas e imágenes en un archivo tar.gz"
+
+msgid "Restore Backup"
+msgstr "Restaurar copia de seguridad"
+
+msgid "Restoring a backup will overwrite current notes and images. The app must be restarted afterwards."
+msgstr "Restaurar una copia de seguridad sobreescribirá las notas e imágenes actuales. La aplicación debe reiniciarse después."
+
+msgid "Backup File"
+msgstr "Archivo de copia de seguridad"
+
+msgid "No file selected"
+msgstr "Ningún archivo seleccionado"
+
+msgid "Select backup file…"
+msgstr "Seleccionar archivo de copia de seguridad…"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "Overwrites current data with the selected backup"
+msgstr "Sobreescribe los datos actuales con la copia de seguridad seleccionada"
+
+msgid "Select Backup File"
+msgstr "Seleccionar archivo de copia de seguridad"
+
+msgid "Backup archives"
+msgstr "Archivos de copia de seguridad"
+
+msgid "Restore Backup?"
+msgstr "¿Restaurar copia de seguridad?"
+
+msgid "This will overwrite all current notes and images. The application must be restarted to apply the changes."
+msgstr "Esto sobreescribirá todas las notas e imágenes actuales. La aplicación debe reiniciarse para aplicar los cambios."
+
+msgid "Backup Restored"
+msgstr "Copia de seguridad restaurada"
+
+msgid "The backup has been restored. Please restart the application to apply the changes."
+msgstr "La copia de seguridad ha sido restaurada. Por favor, reinicia la aplicación para aplicar los cambios."
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Restart Now"
+msgstr "Reiniciar ahora"
+
+msgid "Backup created"
+msgstr "Copia de seguridad creada"
+
+msgid "Backup failed"
+msgstr "Error al crear la copia de seguridad"
+
+msgid "Backup error"
+msgstr "Error de copia de seguridad"
+
+msgid "Restore failed"
+msgstr "Error al restaurar"
+
+msgid "Restore error"
+msgstr "Error de restauración"
+
+msgid "OK"
+msgstr "Aceptar"

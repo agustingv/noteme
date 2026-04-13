@@ -6,8 +6,10 @@ src/rich_editor.vala
 src/extensions/word_count_extension.vala
 src/extensions/note_info_extension.vala
 src/extensions/image_extension.vala
+src/extensions/crypt_extension.vala
 src/dialogs/preferences_dialog.vala
 src/dialogs/extensions_dialog.vala
+src/dialogs/backup_dialog.vala
 data/ui/main-window.ui
 data/ui/note-row.ui
 data/ui/rich-editor.ui

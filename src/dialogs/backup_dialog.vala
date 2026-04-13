@@ -13,7 +13,6 @@ namespace NoteMe
             page.title     = _("Backups");
             add (page);
 
-            // ── Destination group ────────────────────────────────────────────
             var dest_group = new Adw.PreferencesGroup ();
             dest_group.title = _("Create Backup");
             page.add (dest_group);
@@ -64,8 +63,7 @@ namespace NoteMe
             create_btn.clicked.connect (() => {
                 run_backup (prefs, create_btn, backup_status_row);
             });
-
-            // ── Import group ─────────────────────────────────────────────────
+            
             var import_group = new Adw.PreferencesGroup ();
             import_group.title       = _("Restore Backup");
             import_group.description = _("Restoring a backup will overwrite current notes and images. The app must be restarted afterwards.");
