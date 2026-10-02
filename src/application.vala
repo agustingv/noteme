@@ -91,7 +91,7 @@ namespace NoteMe
             var dialog = new Adw.AboutDialog ();
             dialog.application_name = "NoteMe";
             dialog.application_icon = "io.github.agustingv.noteme";
-            dialog.version          = "1.0.0";
+            dialog.version          = Config.VERSION;
             dialog.developer_name   = "NoteMe Contributors";
             dialog.license_type     = Gtk.License.GPL_3_0;
             dialog.website          = "https://github.com/agustingv/noteme";

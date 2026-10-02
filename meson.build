@@ -1,8 +1,8 @@
 project('noteme', 'vala', 'c',
-  version: '1.0',
+  version: '1.0.0',
   meson_version: '>= 0.59.0',
   default_options: [
-    'buildtype=debug',
+    'buildtype=release',
     'warning_level=2',
     'default_library=static'
   ],

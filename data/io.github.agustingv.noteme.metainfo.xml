@@ -5,20 +5,59 @@
   <project_license>GPL-3.0-or-later</project_license>
   <name>NoteMe</name>
   <summary>A simple note-taking application</summary>
+  <developer id="io.github.agustingv">
+    <name>Agustín García</name>
+  </developer>
   <description>
-    <p>NoteMe is a minimal GNOME note-taking application.</p>
+    <p>
+      NoteMe is a simple note-taking application for GNOME. Write rich text notes,
+      organize them with pins and color labels, and find them quickly with search.
+      Notes are saved automatically as you type.
+    </p>
     <ul>
-      <li>Create, edit, and delete notes</li>
-      <li>Notes are saved automatically</li>
-      <li>Sidebar navigation with live preview</li>
+      <li>Rich text formatting: bold, italic, underline, inline code and bullet lists</li>
+      <li>Markdown headings and blockquotes, with a live side-by-side preview</li>
+      <li>Pin notes to the top and label them with colors</li>
+      <li>Insert images by file chooser or drag and drop</li>
+      <li>Encrypt individual notes with a password (AES-256)</li>
+      <li>Back up and restore all notes and images</li>
+      <li>Export notes to Markdown or plain text</li>
+      <li>Optional extensions: word count, note information and more</li>
     </ul>
   </description>
+  <launchable type="desktop-id">io.github.agustingv.noteme.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/agustingv/noteme/v1.0.0/data/screenshots/main-window.png</image>
+      <caption>Notes list with color labels and the rich text editor</caption>
+    </screenshot>
+  </screenshots>
   <url type="homepage">https://github.com/agustingv/noteme</url>
+  <url type="bugtracker">https://github.com/agustingv/noteme/issues</url>
+  <url type="vcs-browser">https://github.com/agustingv/noteme</url>
   <provides>
     <binary>noteme</binary>
   </provides>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </supports>
   <releases>
-    <release version="1.0.0" date="2026-03-28"/>
+    <release version="1.0.0" date="2026-10-02">
+      <description>
+        <p>First release.</p>
+        <ul>
+          <li>Rich text notes with automatic saving</li>
+          <li>Pinned notes, color labels and search</li>
+          <li>Extensions: Markdown preview, images, encryption, word count and note information</li>
+          <li>Backups, export to Markdown or plain text</li>
+          <li>English and Spanish translations</li>
+        </ul>
+      </description>
+    </release>
   </releases>
   <content_rating type="oars-1.1"/>
 </component>

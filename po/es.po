@@ -4,9 +4,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: noteme 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/example/gnotes/issues\n"
-"POT-Creation-Date: 2026-03-28 00:00+0000\n"
-"PO-Revision-Date: 2026-03-30 00:00+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-02 07:31+0200\n"
+"PO-Revision-Date: 2026-10-02 07:35+0200\n"
 "Last-Translator: NoteMe Contributors\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -15,359 +15,546 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# UI strings — main window
-msgid "Preferences"
-msgstr "Preferencias"
-
-msgid "About NoteMe"
-msgstr "Acerca de NoteMe"
-
-msgid "Main Menu"
-msgstr "Menú principal"
-
-msgid "New Note"
-msgstr "Nueva nota"
-
-msgid "Delete Note"
-msgstr "Eliminar nota"
-
-msgid "Search notes…"
-msgstr "Buscar notas…"
-
-msgid "No Note Selected"
-msgstr "Ninguna nota seleccionada"
-
-msgid "Select a note from the sidebar or create a new one."
-msgstr "Selecciona una nota de la barra lateral o crea una nueva."
-
-msgid "Note title…"
-msgstr "Título de la nota…"
-
-msgid "Note color"
-msgstr "Color de la nota"
-
-# Rich editor toolbar
-msgid "Bold (Ctrl+B)"
-msgstr "Negrita (Ctrl+B)"
-
-msgid "Italic (Ctrl+I)"
-msgstr "Cursiva (Ctrl+I)"
-
-msgid "Underline (Ctrl+U)"
-msgstr "Subrayado (Ctrl+U)"
-
-msgid "Inline Code (Ctrl+`)"
-msgstr "Código en línea (Ctrl+`)"
-
-msgid "Bullet List (Ctrl+Shift+L)"
-msgstr "Lista con viñetas (Ctrl+Mayús+L)"
-
-msgid "Markdown Preview (Ctrl+Shift+P)"
-msgstr "Vista previa Markdown (Ctrl+Mayús+P)"
-
-# Delete note dialog
-msgid "Delete Note?"
-msgstr "¿Eliminar nota?"
-
-msgid "%s will be permanently deleted."
-msgstr "%s se eliminará de forma permanente."
-
-msgid "Cancel"
-msgstr "Cancelar"
-
-msgid "Delete"
-msgstr "Eliminar"
+# About dialog
+#: src/application.vala:99
+msgid "A simple note-taking app"
+msgstr "Una aplicación sencilla para tomar notas"
 
 # Color picker labels
+#: src/main_window.vala:108
 msgid "Default"
 msgstr "Predeterminado"
 
+#: src/main_window.vala:108
 msgid "Red"
 msgstr "Rojo"
 
+#: src/main_window.vala:108
 msgid "Yellow"
 msgstr "Amarillo"
 
+#: src/main_window.vala:108
 msgid "Lemon"
 msgstr "Limón"
 
+#: src/main_window.vala:108
 msgid "Sage"
 msgstr "Salvia"
 
+#: src/main_window.vala:109
 msgid "Mint"
 msgstr "Menta"
 
+#: src/main_window.vala:109
 msgid "Fog"
 msgstr "Niebla"
 
+#: src/main_window.vala:109
 msgid "Blue"
 msgstr "Azul"
 
+#: src/main_window.vala:109
 msgid "Purple"
 msgstr "Morado"
 
+#: src/main_window.vala:109
 msgid "Pink"
 msgstr "Rosa"
 
-# Preferences dialog
-msgid "Editor"
-msgstr "Editor"
+# Delete note dialog
+#: src/main_window.vala:182
+msgid "Delete Note?"
+msgstr "¿Eliminar nota?"
 
-msgid "Font"
-msgstr "Fuente"
+#: src/main_window.vala:183
+#, c-format
+msgid "%s will be permanently deleted."
+msgstr "%s se eliminará de forma permanente."
 
-# About dialog
-msgid "A simple note-taking app built with GTK4 and Vala."
-msgstr "Una aplicación sencilla de notas construida con GTK4 y Vala."
+#: src/main_window.vala:185 src/extensions/crypt_extension.vala:124
+#: src/extensions/crypt_extension.vala:198 src/dialogs/backup_dialog.vala:136
+msgid "Cancel"
+msgstr "Cancelar"
 
-# Note row — pin button
-msgid "Pin note"
-msgstr "Fijar nota"
+#: src/main_window.vala:186
+msgid "Delete"
+msgstr "Eliminar"
 
+#: src/note_row.vala:37
 msgid "Unpin note"
 msgstr "Desfijar nota"
 
-# Rich editor — export
-msgid "Export to file"
-msgstr "Exportar a archivo"
+# Note row — pin button
+#: src/note_row.vala:40 data/ui/note-row.ui:64
+msgid "Pin note"
+msgstr "Fijar nota"
 
+#: src/note_row.vala:49
+msgid "Encrypted note"
+msgstr "Nota cifrada"
+
+#: src/rich_editor.vala:195
 msgid "Export Note"
 msgstr "Exportar nota"
 
+#: src/rich_editor.vala:199
 msgid "Markdown files"
 msgstr "Archivos Markdown"
 
+#: src/rich_editor.vala:203
 msgid "Text files"
 msgstr "Archivos de texto"
 
+#: src/rich_editor.vala:207
 msgid "All files"
 msgstr "Todos los archivos"
 
-# Main menu
-msgid "Extensions"
-msgstr "Extensiones"
+#: src/extensions/markdown_preview_extension.vala:6
+msgid "Markdown Preview"
+msgstr "Vista previa Markdown"
 
-# Extensions dialog
-msgid "Installed Extensions"
-msgstr "Extensiones instaladas"
+#: src/extensions/markdown_preview_extension.vala:7
+msgid "Live markdown preview pane (Ctrl+Shift+P)"
+msgstr "Panel de vista previa Markdown en vivo (Ctrl+Mayús+P)"
 
-msgid "External plugins can be placed in %s as .so files. See README.md in https://github.com/agustingv/noteme how to create your own."
-msgstr "Los complementos externos se pueden colocar en %s como archivos .so. Consulta el README.md en https://github.com/agustingv/noteme para saber cómo crear el tuyo."
+#: src/extensions/markdown_preview_extension.vala:60
+msgid "Markdown Preview (Ctrl+Shift+P)"
+msgstr "Vista previa Markdown (Ctrl+Mayús+P)"
 
 # Word Count extension
+#: src/extensions/word_count_extension.vala:5
 msgid "Word Count"
 msgstr "Contador de palabras"
 
+#: src/extensions/word_count_extension.vala:6
 msgid "Shows word and character count in the editor toolbar."
-msgstr "Muestra el recuento de palabras y caracteres en la barra de herramientas."
+msgstr ""
+"Muestra el recuento de palabras y caracteres en la barra de herramientas."
 
+#: src/extensions/word_count_extension.vala:34
+#, c-format
 msgid "%d words · %d chars"
 msgstr "%d palabras · %d caracteres"
 
 # Note Info extension
+#: src/extensions/note_info_extension.vala:5
 msgid "Note Info"
 msgstr "Info de nota"
 
+#: src/extensions/note_info_extension.vala:6
 msgid "Shows detailed statistics about the current note."
 msgstr "Muestra estadísticas detalladas sobre la nota actual."
 
+#: src/extensions/note_info_extension.vala:13
+#: src/extensions/note_info_extension.vala:36
 msgid "Note Information"
 msgstr "Información de la nota"
 
+#: src/extensions/note_info_extension.vala:54
 msgid "General"
 msgstr "General"
 
+#: src/extensions/note_info_extension.vala:57
 msgid "Title"
 msgstr "Título"
 
-msgid "Created"
-msgstr "Creada"
-
-msgid "Color"
-msgstr "Color"
-
-msgid "Pinned"
-msgstr "Fijada"
-
+#: src/extensions/note_info_extension.vala:57
 msgid "Untitled"
 msgstr "Sin título"
 
+#: src/extensions/note_info_extension.vala:58
+msgid "Created"
+msgstr "Creada"
+
+#: src/extensions/note_info_extension.vala:59
+msgid "Color"
+msgstr "Color"
+
+#: src/extensions/note_info_extension.vala:59
 msgid "None"
 msgstr "Ninguno"
 
+#: src/extensions/note_info_extension.vala:60
+msgid "Pinned"
+msgstr "Fijada"
+
+#: src/extensions/note_info_extension.vala:60
 msgid "Yes"
 msgstr "Sí"
 
+#: src/extensions/note_info_extension.vala:60
 msgid "No"
 msgstr "No"
 
+#: src/extensions/note_info_extension.vala:64
 msgid "Statistics"
 msgstr "Estadísticas"
 
+#: src/extensions/note_info_extension.vala:67
 msgid "Words"
 msgstr "Palabras"
 
+#: src/extensions/note_info_extension.vala:68
 msgid "Characters"
 msgstr "Caracteres"
 
+#: src/extensions/note_info_extension.vala:69
 msgid "Characters (no spaces)"
 msgstr "Caracteres (sin espacios)"
 
+#: src/extensions/note_info_extension.vala:70
 msgid "Lines"
 msgstr "Líneas"
 
+#: src/extensions/note_info_extension.vala:71
 msgid "Estimated reading time"
 msgstr "Tiempo de lectura estimado"
 
+#: src/extensions/note_info_extension.vala:72
 msgid "< 1 min"
 msgstr "< 1 min"
 
+#: src/extensions/note_info_extension.vala:72
+#, c-format
 msgid "%d min"
 msgstr "%d min"
 
-# Crypt extension
-msgid "Note Encryption"
-msgstr "Cifrado de notas"
-
-msgid "Encrypt and decrypt notes with a password (AES-256)"
-msgstr "Cifra y descifra notas con una contraseña (AES-256)"
-
-msgid "Encrypt / Decrypt Note"
-msgstr "Cifrar / Descifrar nota"
-
-msgid "Password"
-msgstr "Contraseña"
-
-msgid "Confirm password"
-msgstr "Confirmar contraseña"
-
-msgid "Encrypt Note"
-msgstr "Cifrar nota"
-
-msgid "Enter a password to encrypt this note. You will need the password to read it again."
-msgstr "Introduce una contraseña para cifrar esta nota. La necesitarás para volver a leerla."
-
-msgid "Encrypt"
-msgstr "Cifrar"
-
-msgid "Password cannot be empty"
-msgstr "La contraseña no puede estar vacía"
-
-msgid "Passwords do not match"
-msgstr "Las contraseñas no coinciden"
-
-msgid "Encryption failed"
-msgstr "Error al cifrar"
-
-msgid "Note encrypted"
-msgstr "Nota cifrada"
-
-msgid "Decrypt Note"
-msgstr "Descifrar nota"
-
-msgid "Enter the password to decrypt and view this note."
-msgstr "Introduce la contraseña para descifrar y ver esta nota."
-
-msgid "Decrypt"
-msgstr "Descifrar"
-
-msgid "Decryption failed — wrong password?"
-msgstr "Error al descifrar: ¿contraseña incorrecta?"
-
-msgid "Note decrypted"
-msgstr "Nota descifrada"
-
 # Image extension
+#: src/extensions/image_extension.vala:5 src/extensions/image_extension.vala:14
 msgid "Insert Image"
 msgstr "Insertar imagen"
 
-msgid "Adds a toolbar button for inserting images into notes."
-msgstr "Agrega un botón en la barra de herramientas para insertar imágenes en las notas."
+#: src/extensions/image_extension.vala:6
+msgid ""
+"Adds a toolbar button for inserting images into notes. Supports drag and "
+"drop."
+msgstr "Agrega un botón en la barra de herramientas para insertar imágenes en las notas. Admite arrastrar y soltar."
 
+#: src/extensions/image_extension.vala:41
 msgid "Select Image"
 msgstr "Seleccionar imagen"
 
+#: src/extensions/image_extension.vala:44
+#: src/dialogs/preferences_dialog.vala:44
 msgid "Images"
 msgstr "Imágenes"
 
+# Crypt extension
+#: src/extensions/crypt_extension.vala:6
+msgid "Note Encryption"
+msgstr "Cifrado de notas"
+
+#: src/extensions/crypt_extension.vala:7
+msgid "Encrypt and decrypt notes with a password (AES-256)"
+msgstr "Cifra y descifra notas con una contraseña (AES-256)"
+
+#: src/extensions/crypt_extension.vala:22
+msgid "Encrypt / Decrypt Note"
+msgstr "Cifrar / Descifrar nota"
+
+#: src/extensions/crypt_extension.vala:104
+#: src/extensions/crypt_extension.vala:187
+msgid "Password"
+msgstr "Contraseña"
+
+#: src/extensions/crypt_extension.vala:109
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
+#: src/extensions/crypt_extension.vala:120
+msgid "Encrypt Note"
+msgstr "Cifrar nota"
+
+#: src/extensions/crypt_extension.vala:121
+msgid ""
+"Enter a password to encrypt this note. You will need the password to read it "
+"again."
+msgstr ""
+"Introduce una contraseña para cifrar esta nota. La necesitarás para volver a "
+"leerla."
+
+#: src/extensions/crypt_extension.vala:125
+msgid "Encrypt"
+msgstr "Cifrar"
+
+#: src/extensions/crypt_extension.vala:137
+#: src/extensions/crypt_extension.vala:210
+msgid "Password cannot be empty"
+msgstr "La contraseña no puede estar vacía"
+
+#: src/extensions/crypt_extension.vala:142
+msgid "Passwords do not match"
+msgstr "Las contraseñas no coinciden"
+
+#: src/extensions/crypt_extension.vala:158
+msgid "Encryption failed"
+msgstr "Error al cifrar"
+
+#: src/extensions/crypt_extension.vala:171
+msgid "Note encrypted"
+msgstr "Nota cifrada"
+
+#: src/extensions/crypt_extension.vala:194
+msgid "Decrypt Note"
+msgstr "Descifrar nota"
+
+#: src/extensions/crypt_extension.vala:195
+msgid "Enter the password to decrypt and view this note."
+msgstr "Introduce la contraseña para descifrar y ver esta nota."
+
+#: src/extensions/crypt_extension.vala:199
+msgid "Decrypt"
+msgstr "Descifrar"
+
+#: src/extensions/crypt_extension.vala:229
+msgid "Decryption failed — wrong password?"
+msgstr "Error al descifrar: ¿contraseña incorrecta?"
+
+#: src/extensions/crypt_extension.vala:240
+msgid "Note decrypted"
+msgstr "Nota descifrada"
+
+# UI strings — main window
+#: src/dialogs/preferences_dialog.vala:9 data/ui/main-window.ui:9
+msgid "Preferences"
+msgstr "Preferencias"
+
+# Preferences dialog
+#: src/dialogs/preferences_dialog.vala:13
+msgid "Editor"
+msgstr "Editor"
+
+#: src/dialogs/preferences_dialog.vala:19
+#: src/dialogs/preferences_dialog.vala:23
+msgid "Font"
+msgstr "Fuente"
+
+#: src/dialogs/preferences_dialog.vala:49
+msgid "Display Size"
+msgstr "Tamaño de visualización"
+
+#: src/dialogs/preferences_dialog.vala:50
+msgid "Small (160 px)"
+msgstr "Pequeño (160 px)"
+
+#: src/dialogs/preferences_dialog.vala:50
+msgid "Medium (320 px)"
+msgstr "Mediano (320 px)"
+
+#: src/dialogs/preferences_dialog.vala:50
+msgid "Large (480 px)"
+msgstr "Grande (480 px)"
+
+# Main menu
+#: src/dialogs/extensions_dialog.vala:6 src/dialogs/extensions_dialog.vala:10
+#: data/ui/main-window.ui:13
+msgid "Extensions"
+msgstr "Extensiones"
+
+# Extensions dialog
+#: src/dialogs/extensions_dialog.vala:14
+msgid "Installed Extensions"
+msgstr "Extensiones instaladas"
+
+#: src/dialogs/extensions_dialog.vala:15
+#, c-format
+msgid ""
+"External plugins can be placed in %s as .so files. See README.md in https://"
+"github.com/agustingv/noteme how to create your own."
+msgstr ""
+"Los complementos externos se pueden colocar en %s como archivos .so. "
+"Consulta el README.md en https://github.com/agustingv/noteme para saber cómo "
+"crear el tuyo."
+
 # Backup dialog
+#: src/dialogs/backup_dialog.vala:9 src/dialogs/backup_dialog.vala:13
+#: data/ui/main-window.ui:17
 msgid "Backups"
 msgstr "Copias de seguridad"
 
+#: src/dialogs/backup_dialog.vala:17 src/dialogs/backup_dialog.vala:53
+#: src/dialogs/backup_dialog.vala:56
 msgid "Create Backup"
 msgstr "Crear copia de seguridad"
 
+#: src/dialogs/backup_dialog.vala:21
 msgid "Destination Folder"
 msgstr "Carpeta de destino"
 
+#: src/dialogs/backup_dialog.vala:25
 msgid "Choose folder…"
 msgstr "Elegir carpeta…"
 
+#: src/dialogs/backup_dialog.vala:34
 msgid "Choose Backup Folder"
 msgstr "Elegir carpeta de copia de seguridad"
 
+#: src/dialogs/backup_dialog.vala:54
 msgid "Archives all notes and images into a tar.gz file"
 msgstr "Archiva todas las notas e imágenes en un archivo tar.gz"
 
+#: src/dialogs/backup_dialog.vala:68 src/dialogs/backup_dialog.vala:88
 msgid "Restore Backup"
 msgstr "Restaurar copia de seguridad"
 
-msgid "Restoring a backup will overwrite current notes and images. The app must be restarted afterwards."
-msgstr "Restaurar una copia de seguridad sobreescribirá las notas e imágenes actuales. La aplicación debe reiniciarse después."
+#: src/dialogs/backup_dialog.vala:69
+msgid ""
+"Restoring a backup will overwrite current notes and images. The app must be "
+"restarted afterwards."
+msgstr ""
+"Restaurar una copia de seguridad sobreescribirá las notas e imágenes "
+"actuales. La aplicación debe reiniciarse después."
 
+#: src/dialogs/backup_dialog.vala:73
 msgid "Backup File"
 msgstr "Archivo de copia de seguridad"
 
+#: src/dialogs/backup_dialog.vala:74
 msgid "No file selected"
 msgstr "Ningún archivo seleccionado"
 
+#: src/dialogs/backup_dialog.vala:77
 msgid "Select backup file…"
 msgstr "Seleccionar archivo de copia de seguridad…"
 
+#: src/dialogs/backup_dialog.vala:85 src/dialogs/backup_dialog.vala:137
 msgid "Restore"
 msgstr "Restaurar"
 
+#: src/dialogs/backup_dialog.vala:86
 msgid "Overwrites current data with the selected backup"
 msgstr "Sobreescribe los datos actuales con la copia de seguridad seleccionada"
 
+#: src/dialogs/backup_dialog.vala:98
 msgid "Select Backup File"
 msgstr "Seleccionar archivo de copia de seguridad"
 
+#: src/dialogs/backup_dialog.vala:101
 msgid "Backup archives"
 msgstr "Archivos de copia de seguridad"
 
+#: src/dialogs/backup_dialog.vala:133
 msgid "Restore Backup?"
 msgstr "¿Restaurar copia de seguridad?"
 
-msgid "This will overwrite all current notes and images. The application must be restarted to apply the changes."
-msgstr "Esto sobreescribirá todas las notas e imágenes actuales. La aplicación debe reiniciarse para aplicar los cambios."
+#: src/dialogs/backup_dialog.vala:134
+msgid ""
+"This will overwrite all current notes and images. The application must be "
+"restarted to apply the changes."
+msgstr ""
+"Esto sobreescribirá todas las notas e imágenes actuales. La aplicación debe "
+"reiniciarse para aplicar los cambios."
 
-msgid "Backup Restored"
-msgstr "Copia de seguridad restaurada"
-
-msgid "The backup has been restored. Please restart the application to apply the changes."
-msgstr "La copia de seguridad ha sido restaurada. Por favor, reinicia la aplicación para aplicar los cambios."
-
-msgid "Close"
-msgstr "Cerrar"
-
-msgid "Restart Now"
-msgstr "Reiniciar ahora"
-
-msgid "Backup created"
-msgstr "Copia de seguridad creada"
-
-msgid "Backup failed"
-msgstr "Error al crear la copia de seguridad"
-
-msgid "Backup error"
-msgstr "Error de copia de seguridad"
-
+#: src/dialogs/backup_dialog.vala:164
 msgid "Restore failed"
 msgstr "Error al restaurar"
 
+#: src/dialogs/backup_dialog.vala:168 src/dialogs/backup_dialog.vala:173
 msgid "Restore error"
 msgstr "Error de restauración"
 
+#: src/dialogs/backup_dialog.vala:182
+msgid "Backup Restored"
+msgstr "Copia de seguridad restaurada"
+
+#: src/dialogs/backup_dialog.vala:183
+msgid ""
+"The backup has been restored. Please restart the application to apply the "
+"changes."
+msgstr ""
+"La copia de seguridad ha sido restaurada. Por favor, reinicia la aplicación "
+"para aplicar los cambios."
+
+#: src/dialogs/backup_dialog.vala:185
+msgid "Close"
+msgstr "Cerrar"
+
+#: src/dialogs/backup_dialog.vala:186
+msgid "Restart Now"
+msgstr "Reiniciar ahora"
+
+#: src/dialogs/backup_dialog.vala:226
+msgid "Backup created"
+msgstr "Copia de seguridad creada"
+
+#: src/dialogs/backup_dialog.vala:230
+msgid "Backup failed"
+msgstr "Error al crear la copia de seguridad"
+
+#: src/dialogs/backup_dialog.vala:233 src/dialogs/backup_dialog.vala:238
+msgid "Backup error"
+msgstr "Error de copia de seguridad"
+
+#: src/dialogs/backup_dialog.vala:256
 msgid "OK"
 msgstr "Aceptar"
+
+#: data/ui/main-window.ui:23
+msgid "About NoteMe"
+msgstr "Acerca de NoteMe"
+
+#: data/ui/main-window.ui:49
+msgid "Main Menu"
+msgstr "Menú principal"
+
+#: data/ui/main-window.ui:84
+msgid "New Note"
+msgstr "Nueva nota"
+
+#: data/ui/main-window.ui:93
+msgid "Delete Note"
+msgstr "Eliminar nota"
+
+#: data/ui/main-window.ui:110
+msgid "Search notes…"
+msgstr "Buscar notas…"
+
+#: data/ui/main-window.ui:148
+msgid "No Note Selected"
+msgstr "Ninguna nota seleccionada"
+
+#: data/ui/main-window.ui:149
+msgid "Select a note from the sidebar or create a new one."
+msgstr "Selecciona una nota de la barra lateral o crea una nueva."
+
+#: data/ui/main-window.ui:174
+msgid "Note title…"
+msgstr "Título de la nota…"
+
+#: data/ui/main-window.ui:183
+msgid "Note color"
+msgstr "Color de la nota"
+
+# Rich editor toolbar
+#: data/ui/rich-editor.ui:29
+msgid "Bold (Ctrl+B)"
+msgstr "Negrita (Ctrl+B)"
+
+#: data/ui/rich-editor.ui:38
+msgid "Italic (Ctrl+I)"
+msgstr "Cursiva (Ctrl+I)"
+
+#: data/ui/rich-editor.ui:47
+msgid "Underline (Ctrl+U)"
+msgstr "Subrayado (Ctrl+U)"
+
+#: data/ui/rich-editor.ui:64
+msgid "Inline Code (Ctrl+`)"
+msgstr "Código en línea (Ctrl+`)"
+
+#: data/ui/rich-editor.ui:73
+msgid "Bullet List (Ctrl+Shift+L)"
+msgstr "Lista con viñetas (Ctrl+Mayús+L)"
+
+# Rich editor — export
+#: data/ui/rich-editor.ui:104
+msgid "Export to file"
+msgstr "Exportar a archivo"
+
+#: data/ui/rich-editor.ui:178
+msgid "This note is encrypted"
+msgstr "Esta nota está cifrada"
+
+#: data/ui/rich-editor.ui:185
+msgid "Click the lock icon in the toolbar to enter your password"
+msgstr "Pulsa el icono del candado en la barra de herramientas para introducir tu contraseña"

@@ -3,6 +3,7 @@ src/application.vala
 src/main_window.vala
 src/note_row.vala
 src/rich_editor.vala
+src/extensions/markdown_preview_extension.vala
 src/extensions/word_count_extension.vala
 src/extensions/note_info_extension.vala
 src/extensions/image_extension.vala

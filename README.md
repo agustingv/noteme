@@ -10,7 +10,9 @@ A simple note-taking application for GNOME, built with GTK4, libadwaita, and Val
 - Live markdown preview (side-by-side)
 - Pin notes to keep them at the top of the list
 - Color labels for notes
-- Insert images into notes
+- Insert images into notes (file chooser or drag and drop)
+- Encrypt individual notes with a password (AES-256)
+- Back up and restore all notes and images
 - Export notes to Markdown (`.md`) or plain text (`.txt`)
 - Search notes by title
 - Notes sorted by date (pinned notes first, then newest first)
@@ -21,7 +23,7 @@ A simple note-taking application for GNOME, built with GTK4, libadwaita, and Val
 
 ## Screenshots
 
-_Coming soon_
+![NoteMe main window](data/screenshots/main-window.png)
 
 ## Requirements
 
@@ -29,6 +31,7 @@ _Coming soon_
 - libadwaita >= 1.4
 - Vala >= 0.56
 - Meson >= 0.59
+- `openssl` (note encryption) and `tar` (backups) at runtime
 
 ## Building
 
@@ -102,7 +105,7 @@ Extensions can add widgets to the editor toolbar and react to note events. Built
 
 ### Installing external extensions
 
-Place compiled `.so` files in `~/.local/share/noteme/plugins/`. They are loaded automatically at startup.
+Place compiled `.so` files in `~/.local/share/noteme/extensions/`. They are loaded automatically at startup.
 
 ### Writing an extension (Vala)
 
@@ -119,7 +122,7 @@ public class MyExtension : Object, NoteMe.IExtension {
 
     public void activate (NoteMe.ExtensionHost h) {
         host = h;
-        btn  = h.add_toolbar_button ("dialog-information-symbolic", "Show note title");
+        btn  = h.addToolbarButton ("dialog-information-symbolic", "Show note title");
         btn.sensitive = false;
         btn.clicked.connect (() => {
             if (host.current_note != null)
@@ -129,7 +132,7 @@ public class MyExtension : Object, NoteMe.IExtension {
     }
 
     public void deactivate () {
-        host?.remove_toolbar_widget (btn);
+        host?.removeToolbarWidget (btn);
         host = null;
     }
 }
@@ -166,11 +169,11 @@ valac --pkg gtk4 --pkg libadwaita-1 --pkg gmodule-2.0 \
       my_extension.vala
 ```
 
-Then copy the result to the plugins directory:
+Then copy the result to the extensions directory:
 
 ```sh
-mkdir -p ~/.local/share/noteme/plugins
-cp my_extension.so ~/.local/share/noteme/plugins/
+mkdir -p ~/.local/share/noteme/extensions
+cp my_extension.so ~/.local/share/noteme/extensions/
 ```
 
 ### Extension API reference
@@ -178,11 +181,13 @@ cp my_extension.so ~/.local/share/noteme/plugins/
 | Symbol | Description |
 |---|---|
 | `host.current_note` | The currently selected `Note`, or `null` |
-| `host.add_toolbar_widget(w)` | Append any widget to the editor toolbar |
-| `host.remove_toolbar_widget(w)` | Remove a previously added toolbar widget |
-| `host.add_toolbar_button(icon, tooltip)` | Create a styled flat icon button, add it to the toolbar, and return it |
-| `host.add_footer_widget(w)` | Append a widget to the editor footer (left of the cursor position) |
-| `host.remove_footer_widget(w)` | Remove a previously added footer widget |
+| `host.addToolbarWidget(w)` | Append any widget to the editor toolbar |
+| `host.removeToolbarWidget(w)` | Remove a previously added toolbar widget |
+| `host.addToolbarButton(icon, tooltip)` | Create a styled flat icon button, add it to the toolbar, and return it |
+| `host.addFooterWidget(w)` | Append a widget to the editor footer (left of the cursor position) |
+| `host.removeFooterWidget(w)` | Remove a previously added footer widget |
+| `host.showToast(message)` | Show a toast notification in the main window |
+| `host.saveCurrentNote()` | Save the currently selected note |
 | `host.note_selected(note)` | Signal: fired when the selected note changes |
 | `host.note_content_changed()` | Signal: fired when the note body is edited |
 
@@ -190,11 +195,11 @@ cp my_extension.so ~/.local/share/noteme/plugins/
 
 - Notes: `~/.local/share/noteme/notes/`
 - Preferences: `~/.config/noteme/preferences`
-- Plugins: `~/.local/share/noteme/plugins/`
+- Extensions: `~/.local/share/noteme/extensions/`
 
 ## License
 
-GPL-3.0-or-later
+NoteMe is released under the GNU General Public License v3.0 or later. See [COPYING](COPYING).
 
 ## Links
 

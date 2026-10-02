@@ -11,6 +11,7 @@ config_vala = configure_file(
   configuration: {
     'GETTEXT_PACKAGE': meson.project_name(),
     'LOCALE_DIR': get_option('prefix') / get_option('localedir'),
+    'VERSION': meson.project_version(),
   },
 )
 
