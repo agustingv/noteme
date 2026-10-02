@@ -12,6 +12,7 @@ A simple note-taking application for GNOME, built with GTK4, libadwaita, and Val
 - Color labels for notes
 - Insert images into notes (file chooser or drag and drop)
 - Encrypt individual notes with a password (AES-256)
+- Spell checking with suggestions and a per-language dictionary selector
 - Back up and restore all notes and images
 - Export notes to Markdown (`.md`) or plain text (`.txt`)
 - Search notes by title
@@ -32,12 +33,19 @@ A simple note-taking application for GNOME, built with GTK4, libadwaita, and Val
 - Vala >= 0.56
 - Meson >= 0.59
 - `openssl` (note encryption) and `tar` (backups) at runtime
+- Optional: enchant-2 (spell checker extension) plus Hunspell dictionaries
 
 ## Building
 
 ```sh
 meson setup build
 ninja -C build
+```
+
+The spell checker extension is built automatically when enchant-2 is found. Use `-Dspell_check=enabled` to require it or `-Dspell_check=disabled` to skip it:
+
+```sh
+meson setup build -Dspell_check=enabled
 ```
 
 ## Running
@@ -102,6 +110,10 @@ sudo ninja -C build install
 ## Extensions
 
 Extensions can add widgets to the editor toolbar and react to note events. Built-in extensions are managed via the **Extensions** entry in the main menu.
+
+### Spell checker
+
+Misspelled words are underlined as you type (text formatted as inline code is skipped). Right-click an underlined word to pick a suggestion, add it to your personal dictionary, or ignore it for the rest of the session. Choose the language from the selector in the editor footer; the choice is remembered in `~/.config/noteme/spell-check`.
 
 ### Installing external extensions
 
@@ -188,6 +200,7 @@ cp my_extension.so ~/.local/share/noteme/extensions/
 | `host.removeFooterWidget(w)` | Remove a previously added footer widget |
 | `host.showToast(message)` | Show a toast notification in the main window |
 | `host.saveCurrentNote()` | Save the currently selected note |
+| `host.getTextView()` | The editor's `Gtk.TextView`, for extensions that decorate text. Tags added to its buffer are not saved with the note |
 | `host.note_selected(note)` | Signal: fired when the selected note changes |
 | `host.note_content_changed()` | Signal: fired when the note body is edited |
 

@@ -94,6 +94,14 @@ namespace NoteMe
             editor?.removeTextViewController(controller);
         }
 
+        // Direct access to the editor's text view, for extensions that decorate
+        // the text (e.g. spell checking). Tags added to its buffer are not saved
+        // with the note.
+        public Gtk.TextView? getTextView()
+        {
+            return editor?.getTextView();
+        }
+
         // Position the cursor at widget-relative coordinates(useful for drop targets)
         public void placeCursorAtCoords(double x, double y)
         {

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noteme 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 07:31+0200\n"
+"POT-Creation-Date: 2026-10-02 07:45+0200\n"
 "PO-Revision-Date: 2026-10-02 07:35+0200\n"
 "Last-Translator: NoteMe Contributors\n"
 "Language-Team: Spanish\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # About dialog
-#: src/application.vala:99
+#: src/application.vala:102
 msgid "A simple note-taking app"
 msgstr "Una aplicación sencilla para tomar notas"
 
@@ -93,19 +93,19 @@ msgstr "Fijar nota"
 msgid "Encrypted note"
 msgstr "Nota cifrada"
 
-#: src/rich_editor.vala:195
+#: src/rich_editor.vala:197
 msgid "Export Note"
 msgstr "Exportar nota"
 
-#: src/rich_editor.vala:199
+#: src/rich_editor.vala:201
 msgid "Markdown files"
 msgstr "Archivos Markdown"
 
-#: src/rich_editor.vala:203
+#: src/rich_editor.vala:205
 msgid "Text files"
 msgstr "Archivos de texto"
 
-#: src/rich_editor.vala:207
+#: src/rich_editor.vala:209
 msgid "All files"
 msgstr "Todos los archivos"
 
@@ -228,7 +228,9 @@ msgstr "Insertar imagen"
 msgid ""
 "Adds a toolbar button for inserting images into notes. Supports drag and "
 "drop."
-msgstr "Agrega un botón en la barra de herramientas para insertar imágenes en las notas. Admite arrastrar y soltar."
+msgstr ""
+"Agrega un botón en la barra de herramientas para insertar imágenes en las "
+"notas. Admite arrastrar y soltar."
 
 #: src/extensions/image_extension.vala:41
 msgid "Select Image"
@@ -313,6 +315,30 @@ msgstr "Error al descifrar: ¿contraseña incorrecta?"
 #: src/extensions/crypt_extension.vala:240
 msgid "Note decrypted"
 msgstr "Nota descifrada"
+
+#: src/extensions/spell_check_extension.vala:5
+msgid "Spell Checker"
+msgstr "Corrector ortográfico"
+
+#: src/extensions/spell_check_extension.vala:6
+msgid "Underlines misspelled words. Right-click a word to see suggestions."
+msgstr "Subraya las palabras mal escritas. Haz clic derecho en una palabra para ver sugerencias."
+
+#: src/extensions/spell_check_extension.vala:134
+msgid "Spell checking language"
+msgstr "Idioma de la corrección ortográfica"
+
+#: src/extensions/spell_check_extension.vala:317
+msgid "No Suggestions"
+msgstr "Sin sugerencias"
+
+#: src/extensions/spell_check_extension.vala:320
+msgid "Add to Dictionary"
+msgstr "Añadir al diccionario"
+
+#: src/extensions/spell_check_extension.vala:321
+msgid "Ignore All"
+msgstr "Ignorar todo"
 
 # UI strings — main window
 #: src/dialogs/preferences_dialog.vala:9 data/ui/main-window.ui:9
@@ -557,4 +583,6 @@ msgstr "Esta nota está cifrada"
 
 #: data/ui/rich-editor.ui:185
 msgid "Click the lock icon in the toolbar to enter your password"
-msgstr "Pulsa el icono del candado en la barra de herramientas para introducir tu contraseña"
+msgstr ""
+"Pulsa el icono del candado en la barra de herramientas para introducir tu "
+"contraseña"

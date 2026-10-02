@@ -67,8 +67,10 @@ namespace NoteMe
             buffer.changed.connect (() => {
                 if (!updating) changed ();
             });
-            buffer.apply_tag.connect  ((_t, _s, _e) => { if (!updating) changed (); });
-            buffer.remove_tag.connect ((_t, _s, _e) => { if (!updating) changed (); });
+            // Only formatting tags are part of the note; tags added by extensions
+            // (e.g. spell-check underlines) must not trigger a save
+            buffer.apply_tag.connect  ((t, _s, _e) => { if (!updating && isFormattingTag (t)) changed (); });
+            buffer.remove_tag.connect ((t, _s, _e) => { if (!updating && isFormattingTag (t)) changed (); });
             buffer.notify["cursor-position"].connect (() => updateToolbarState ());
 
             // Keyboard shortcuts scoped to the text view
@@ -320,6 +322,11 @@ namespace NoteMe
             return true;
         }
 
+        private bool isFormattingTag (Gtk.TextTag tag)
+        {
+            return tag == tag_bold || tag == tag_italic || tag == tag_underline || tag == tag_code;
+        }
+
         private void applyTag (Gtk.TextTag tag, bool add) 
         {
             var buffer = text_view.buffer;
@@ -358,6 +365,11 @@ namespace NoteMe
         {
             int w = preview_pane.get_width ();
             preview_pane.set_position (w > 0 ? w / 2 : 400);
+        }
+
+        public Gtk.TextView getTextView ()
+        {
+            return text_view;
         }
 
         public void addTextViewController (Gtk.EventController controller)
