@@ -42,9 +42,19 @@ dependencies = [
   meson.get_compiler('c').find_library('m', required: false),
 ]
 
+vala_args = ['--target-glib=2.76', '--pkg=gmodule-2.0']
+
+# Optional: the spell checker extension is only built when Enchant is available
+enchant = dependency('enchant-2', required: get_option('spell_check'))
+if enchant.found()
+  sources += files('extensions/spell_check_extension.vala')
+  dependencies += enchant
+  vala_args += ['-D', 'HAVE_ENCHANT']
+endif
+
 executable('noteme',
   sources + resources,
   dependencies: dependencies,
-  vala_args: ['--target-glib=2.76', '--pkg=gmodule-2.0'],
+  vala_args: vala_args,
   install: true,
 )

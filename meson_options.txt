@@ -1,0 +1,2 @@
+option('spell_check', type: 'feature', value: 'auto',
+       description: 'Build the spell checker extension (requires enchant-2)')
